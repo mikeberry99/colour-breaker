@@ -11,11 +11,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:colour_breaker/main.dart';
 
 void main() {
-  testWidgets('Smoke test - Verify Mastermind title is present', (WidgetTester tester) async {
+  testWidgets('Smoke test - Verify Level Selection and navigation to Game Board', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const ProviderScope(child: ColourBreakerApp()));
 
-    // Verify that the title is present.
+    // Verify that the selection screen title and header are present.
     expect(find.text('CODE HACKER'), findsOneWidget);
+    expect(find.text('SYSTEM ACCESS'), findsOneWidget);
+    expect(find.text('SELECT SECURITY PROTOCOL'), findsOneWidget);
+
+    // Verify the level options are present
+    expect(find.text('NOVICE DECRYPTOR'), findsOneWidget);
+    expect(find.text('SYSTEM BREACHER'), findsOneWidget);
+    expect(find.text('ENCRYPTION EXPERT'), findsOneWidget);
+    expect(find.text('GHOST OPERATOR'), findsOneWidget);
+
+    // Find and tap the ESTABLISH CONNECTION button
+    final connectButton = find.text('ESTABLISH CONNECTION');
+    expect(connectButton, findsOneWidget);
+    await tester.tap(connectButton);
+    await tester.pumpAndSettle();
+
+    // Verify that we navigated to the Game Board screen (which contains the debug solution indicator)
+    expect(find.text('🔓 DEBUG: SOLUTION VISIBLE'), findsOneWidget);
   });
 }

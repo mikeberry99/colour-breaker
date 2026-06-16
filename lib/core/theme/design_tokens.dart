@@ -5,6 +5,12 @@ class DesignTokens {
   static const Color background = Color(0xFF131313);
   static const Color boardSurface = Color(0xFF1E1E1E);
   static const Color surfaceContainer = Color(0xFF201F1F);
+  static const Color surfaceContainerHigh = Color(0xFF2A2A2A);
+  static const Color surfaceContainerHighest = Color(0xFF353534);
+  static const Color primaryFixed = Color(0xFF7DF4FF);
+  static const Color onSurface = Color(0xFFE5E2E1);
+  static const Color onSurfaceVariant = Color(0xFFB9CACB);
+  static const Color outlineVariant = Color(0xFF3B494B);
   
   // Interaction & Feedback
   static const Color primaryNeonCyan = Color(0xFF00F0FF);

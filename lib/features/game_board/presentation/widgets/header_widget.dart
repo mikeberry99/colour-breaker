@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/ui/neon_orb.dart';
 import '../../domain/entities/game_state.dart';
@@ -21,15 +22,11 @@ class HeaderWidget extends ConsumerWidget {
         const SizedBox(height: DesignTokens.marginDesktop),
         Text(
           'CODE HACKER',
-          style: Theme.of(context).textTheme.displayLarge?.copyWith(
+          style: GoogleFonts.sora(
+            fontSize: 36,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.05,
             color: DesignTokens.primaryNeonCyan,
-            shadows: [
-              const BoxShadow(
-                color: DesignTokens.primaryNeonCyan,
-                blurRadius: 10,
-                spreadRadius: 2,
-              ),
-            ],
           ),
         ),
         const SizedBox(height: DesignTokens.rowGap),
