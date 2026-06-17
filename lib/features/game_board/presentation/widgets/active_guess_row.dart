@@ -19,8 +19,8 @@ class ActiveGuessRow extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // 5 slots with dashed cyan ring, matching Stitch design
-        ...List.generate(5, (index) {
+        // Slots with dashed cyan ring, matching Stitch design
+        ...List.generate(gameState.slotCount, (index) {
           final hasColor = index < activeGuess.colors.length;
           final color = hasColor ? activeGuess.colors[index] : GameColor.empty;
           return Padding(

@@ -6,6 +6,7 @@ import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/ui/neon_orb.dart';
 import '../../domain/entities/game_color.dart';
 import '../../domain/entities/game_state.dart';
+import '../../domain/entities/security_protocol.dart';
 import '../providers/game_provider.dart';
 import '../providers/reveal_animation_provider.dart';
 
@@ -28,7 +29,7 @@ class HistoryLog extends ConsumerWidget {
       itemBuilder: (context, index) {
         if (index < history.length) {
           final isAnimatingRow = animation.animatingRowIndex == index;
-          final revealedColors = isAnimatingRow ? animation.revealedColors : 5;
+          final revealedColors = isAnimatingRow ? animation.revealedColors : gameState.slotCount;
           final pegsVisible = isAnimatingRow ? animation.pegsVisible : true;
           return _buildRow(
             context,
@@ -39,12 +40,18 @@ class HistoryLog extends ConsumerWidget {
             revealedColors: revealedColors,
             pegsVisible: pegsVisible,
             isActive: isAnimatingRow,
+            protocol: gameState.protocol,
           );
         } else {
           final isActive = index == history.length &&
               gameState.status == GameStatus.playing &&
               !animation.isAnimating;
-          return _buildEmptyRow(context, index, isActive);
+          final emptyRow = _buildEmptyRow(context, gameState, index, isActive);
+          if (index >= 10) {
+            return _AnimatedEmptyRow(child: emptyRow);
+          } else {
+            return emptyRow;
+          }
         }
       },
     );
@@ -56,7 +63,8 @@ class HistoryLog extends ConsumerWidget {
     List<GameColor> colors,
     int greenPegs,
     int yellowPegs, {
-    int revealedColors = 5,
+    required int revealedColors,
+    required SecurityProtocol protocol,
     bool pegsVisible = true,
     bool isActive = false,
   }) {
@@ -130,7 +138,7 @@ class HistoryLog extends ConsumerWidget {
                         AnimatedOpacity(
                           duration: const Duration(milliseconds: 250),
                           opacity: pegsVisible ? 1.0 : 0.0,
-                          child: _buildFeedback(greenPegs, yellowPegs),
+                          child: _buildFeedback(protocol, greenPegs, yellowPegs),
                         ),
                       ],
                     ),
@@ -144,7 +152,7 @@ class HistoryLog extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyRow(BuildContext context, int index, bool isActive) {
+  Widget _buildEmptyRow(BuildContext context, GameState gameState, int index, bool isActive) {
     final formattedIndex = index.toString().padLeft(2, '0');
     return Padding(
       padding: const EdgeInsets.only(bottom: DesignTokens.rowGap),
@@ -188,7 +196,7 @@ class HistoryLog extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
-                          children: List.generate(5, (_) {
+                          children: List.generate(gameState.slotCount, (_) {
                             return const Padding(
                               padding: EdgeInsets.only(
                                 left: DesignTokens.unit,
@@ -198,7 +206,7 @@ class HistoryLog extends ConsumerWidget {
                             );
                           }),
                         ),
-                        _buildFeedback(0, 0, isEmptyRow: true),
+                        _buildFeedback(gameState.protocol, 0, 0, isEmptyRow: true),
                       ],
                     ),
                   ),
@@ -211,7 +219,8 @@ class HistoryLog extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeedback(int greenPegs, int yellowPegs, {bool isEmptyRow = false}) {
+  Widget _buildFeedback(SecurityProtocol protocol, int greenPegs, int yellowPegs, {bool isEmptyRow = false}) {
+    final int pegCount = (protocol == SecurityProtocol.novice || protocol == SecurityProtocol.breacher) ? 4 : 5;
     final List<_PegData> pegData = [];
     if (!isEmptyRow) {
       for (int i = 0; i < greenPegs; i++) {
@@ -220,18 +229,20 @@ class HistoryLog extends ConsumerWidget {
       for (int i = 0; i < yellowPegs; i++) {
         pegData.add(_PegData(DesignTokens.feedbackYellow, isGlow: true));
       }
-      for (int i = pegData.length; i < 5; i++) {
+      for (int i = pegData.length; i < pegCount; i++) {
         pegData.add(_PegData(Colors.white.withValues(alpha: 0.1), isGlow: false));
       }
     } else {
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < pegCount; i++) {
         pegData.add(_PegData(Colors.white.withValues(alpha: 0.1), isGlow: false));
       }
     }
 
     return Padding(
       padding: const EdgeInsets.only(right: DesignTokens.gutter),
-      child: _FeedbackRing(pegs: pegData),
+      child: pegCount == 4
+          ? _FeedbackSquare(pegs: pegData)
+          : _FeedbackRing(pegs: pegData),
     );
   }
 }
@@ -242,6 +253,70 @@ class _PegData {
   final Color color;
   final bool isGlow;
   const _PegData(this.color, {required this.isGlow});
+}
+
+class _FeedbackSquare extends StatelessWidget {
+  final List<_PegData> pegs;
+  final double pegSize;
+
+  const _FeedbackSquare({
+    required this.pegs,
+  }) : pegSize = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<_PegData> displayPegs = List.from(pegs);
+    while (displayPegs.length < 4) {
+      displayPegs.add(_PegData(Colors.white.withValues(alpha: 0.1), isGlow: false));
+    }
+
+    return SizedBox(
+      width: 42,
+      height: 42,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildPeg(displayPegs[0]),
+              const SizedBox(width: 6),
+              _buildPeg(displayPegs[1]),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildPeg(displayPegs[2]),
+              const SizedBox(width: 6),
+              _buildPeg(displayPegs[3]),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPeg(_PegData peg) {
+    return Container(
+      width: pegSize,
+      height: pegSize,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: peg.color,
+        boxShadow: peg.isGlow
+            ? [
+                BoxShadow(
+                  color: peg.color.withValues(alpha: 0.6),
+                  blurRadius: 5,
+                  spreadRadius: 1,
+                ),
+              ]
+            : null,
+      ),
+    );
+  }
 }
 
 /// Positions [pegs] evenly around a circle of [radius].
@@ -266,7 +341,6 @@ class _FeedbackRing extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: List.generate(count, (i) {
-          // Distribute evenly; -π/2 offset so first peg starts at top
           final double angle = (2 * math.pi / count) * i - math.pi / 2;
           final double dx = radius * math.cos(angle);
           final double dy = radius * math.sin(angle);
@@ -294,6 +368,63 @@ class _FeedbackRing extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+}
+
+class _AnimatedEmptyRow extends StatefulWidget {
+  final Widget child;
+  const _AnimatedEmptyRow({required this.child});
+
+  @override
+  State<_AnimatedEmptyRow> createState() => _AnimatedEmptyRowState();
+}
+
+class _AnimatedEmptyRowState extends State<_AnimatedEmptyRow>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _heightFactor;
+  late Animation<double> _opacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _heightFactor = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+    );
+    _opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Opacity(
+          opacity: _opacity.value,
+          child: ClipRect(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              heightFactor: _heightFactor.value,
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: widget.child,
     );
   }
 }

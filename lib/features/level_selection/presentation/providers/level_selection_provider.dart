@@ -1,11 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-enum SecurityProtocol {
-  novice,
-  breacher,
-  expert,
-  ghost,
-}
+import '../../../game_board/domain/entities/security_protocol.dart';
+export '../../../game_board/domain/entities/security_protocol.dart';
 
 extension SecurityProtocolExtension on SecurityProtocol {
   String get title {
@@ -26,11 +21,11 @@ extension SecurityProtocolExtension on SecurityProtocol {
       case SecurityProtocol.novice:
         return '4-slot sequences with unlimited attempts. Perfect for learning the basic protocols.';
       case SecurityProtocol.breacher:
-        return 'The standard 5-slot challenge. Requires logical precision to bypass the firewall.';
+        return 'Classic 4-slot sequence, attempts limited. Requires logical precision to bypass the firewall.';
       case SecurityProtocol.expert:
-        return '6-slot sequences with a limited attempt window. Only for those with high-level clearance.';
+        return 'Upgraded 5-slot sequences. Each color only appears once. Only for those with high-level clearance.';
       case SecurityProtocol.ghost:
-        return "6-slot sequences with 'invisible' feedback and a strict 10-attempt limit. The ultimate test of logic.";
+        return "The ultimate test of logic. 5-slot sequence, colors can repeat, 15-attempt limit.";
     }
   }
 }
@@ -46,4 +41,6 @@ class SelectedProtocolNotifier extends Notifier<SecurityProtocol> {
   }
 }
 
-final selectedProtocolProvider = NotifierProvider<SelectedProtocolNotifier, SecurityProtocol>(SelectedProtocolNotifier.new);
+final selectedProtocolProvider =
+    NotifierProvider<SelectedProtocolNotifier, SecurityProtocol>(
+        SelectedProtocolNotifier.new);

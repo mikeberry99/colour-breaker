@@ -11,7 +11,7 @@ class SubmitButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final gameState = ref.watch(gameStateProvider);
-    final canSubmit = gameState.activeGuess.isComplete &&
+    final canSubmit = gameState.activeGuess.isCompleteFor(gameState.slotCount) &&
         gameState.status == GameStatus.playing;
 
     return GestureDetector(

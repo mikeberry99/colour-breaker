@@ -7,5 +7,5 @@ class FeedbackPegs {
     required this.correctColorOnly,
   });
 
-  bool get isWin => correctPositionAndColor == 5;
+  bool isWin(int slotCount) => correctPositionAndColor == slotCount;
 }

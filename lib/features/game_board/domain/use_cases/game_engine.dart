@@ -7,11 +7,12 @@ class GameEngine {
     int correctPositionAndColor = 0;
     int correctColorOnly = 0;
 
-    List<bool> guessUsed = List.filled(5, false);
-    List<bool> solutionUsed = List.filled(5, false);
+    final length = guess.colors.length;
+    List<bool> guessUsed = List.filled(length, false);
+    List<bool> solutionUsed = List.filled(length, false);
 
     // First pass: Find exact matches (Green)
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < length; i++) {
       if (guess.colors[i] == solution.colors[i]) {
         correctPositionAndColor++;
         guessUsed[i] = true;
@@ -20,9 +21,9 @@ class GameEngine {
     }
 
     // Second pass: Find partial matches (Yellow)
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < length; i++) {
       if (!guessUsed[i]) {
-        for (int j = 0; j < 5; j++) {
+        for (int j = 0; j < length; j++) {
           if (!solutionUsed[j] && guess.colors[i] == solution.colors[j]) {
             correctColorOnly++;
             solutionUsed[j] = true;

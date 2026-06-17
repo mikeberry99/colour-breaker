@@ -5,6 +5,7 @@ import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/ui/neon_orb.dart';
 import '../../domain/entities/game_state.dart';
 import '../providers/game_provider.dart';
+import '../providers/reveal_animation_provider.dart';
 
 class HeaderWidget extends ConsumerWidget {
   const HeaderWidget({super.key});
@@ -13,9 +14,10 @@ class HeaderWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gameState = ref.watch(gameStateProvider);
     final notifier = ref.read(gameStateProvider.notifier);
+    final animation = ref.watch(revealAnimationProvider);
     // DEBUG: always show solution — remove debugSolution and restore revealedSolution for production
     final debugSolution = notifier.debugSolution;
-    final isGameOver = gameState.status != GameStatus.playing;
+    final isGameOver = gameState.status != GameStatus.playing && !animation.isAnimating;
 
     return Column(
       children: [
@@ -55,7 +57,7 @@ class HeaderWidget extends ConsumerWidget {
             // Slots styled identically to ActiveGuessRow
             Row(
               mainAxisSize: MainAxisSize.min,
-              children: List.generate(5, (index) {
+              children: List.generate(debugSolution.colors.length, (index) {
                 final color = debugSolution.colors[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6),

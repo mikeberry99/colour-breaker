@@ -6,4 +6,6 @@ class Guess {
   const Guess({required this.colors});
 
   bool get isComplete => colors.length == 5 && !colors.contains(GameColor.empty);
+
+  bool isCompleteFor(int slotCount) => colors.length == slotCount && !colors.contains(GameColor.empty);
 }

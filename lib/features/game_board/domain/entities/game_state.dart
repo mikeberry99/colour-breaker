@@ -1,5 +1,6 @@
 import 'guess.dart';
 import 'feedback_pegs.dart';
+import 'security_protocol.dart';
 
 enum GameStatus {
   playing,
@@ -14,6 +15,7 @@ class GameState {
   final Guess activeGuess;
   final GameStatus status;
   final int maxAttempts;
+  final SecurityProtocol protocol;
 
   const GameState({
     this.gameId = 0,
@@ -21,8 +23,24 @@ class GameState {
     this.feedbacks = const [],
     this.activeGuess = const Guess(colors: []),
     this.status = GameStatus.playing,
-    this.maxAttempts = 10, // From user approval
+    this.maxAttempts = 10,
+    this.protocol = SecurityProtocol.novice,
   });
+
+  int get slotCount => (protocol == SecurityProtocol.novice || protocol == SecurityProtocol.breacher) ? 4 : 5;
+
+  int get absoluteMaxAttempts {
+    switch (protocol) {
+      case SecurityProtocol.novice:
+        return 100;
+      case SecurityProtocol.breacher:
+        return 10;
+      case SecurityProtocol.expert:
+        return 25;
+      case SecurityProtocol.ghost:
+        return 15;
+    }
+  }
 
   GameState copyWith({
     int? gameId,
@@ -30,6 +48,8 @@ class GameState {
     List<FeedbackPegs>? feedbacks,
     Guess? activeGuess,
     GameStatus? status,
+    int? maxAttempts,
+    SecurityProtocol? protocol,
   }) {
     return GameState(
       gameId: gameId ?? this.gameId,
@@ -37,7 +57,8 @@ class GameState {
       feedbacks: feedbacks ?? this.feedbacks,
       activeGuess: activeGuess ?? this.activeGuess,
       status: status ?? this.status,
-      maxAttempts: maxAttempts,
+      maxAttempts: maxAttempts ?? this.maxAttempts,
+      protocol: protocol ?? this.protocol,
     );
   }
 }
