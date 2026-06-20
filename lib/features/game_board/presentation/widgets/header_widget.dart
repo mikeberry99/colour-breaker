@@ -6,6 +6,7 @@ import '../../domain/entities/game_state.dart';
 import '../providers/game_provider.dart';
 import '../providers/reveal_animation_provider.dart';
 import '../../../level_selection/presentation/providers/level_selection_provider.dart';
+import 'security_protocol_dialog.dart';
 
 class HeaderWidget extends ConsumerWidget {
   const HeaderWidget({super.key});
@@ -28,24 +29,14 @@ class HeaderWidget extends ConsumerWidget {
         Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: DesignTokens.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.6),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color:
-                      DesignTokens.primaryNeonCyan.withValues(alpha: 0.15),
-                  blurRadius: 15,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
+          child: _HeaderInteractiveContainer(
+            onTap: () {
+              showDialog(
+                context: context,
+                barrierColor: Colors.black.withValues(alpha: 0.7),
+                builder: (context) => SecurityProtocolDialog(protocol: protocol),
+              );
+            },
             child: Stack(
               children: [
                 // Protocol label — top-left, 50% opacity
@@ -116,21 +107,63 @@ class HeaderWidget extends ConsumerWidget {
             ),
           ),
         ),
-        if (isGameOver)
-          Padding(
-            padding: const EdgeInsets.only(top: DesignTokens.gutter),
-            child: Text(
-              gameState.status == GameStatus.won
-                  ? 'SYSTEM BREACHED'
-                  : 'ACCESS DENIED',
-              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    color: gameState.status == GameStatus.won
-                        ? DesignTokens.feedbackGreen
-                        : DesignTokens.feedbackYellow, // or Red
-                  ),
-            ),
-          ),
+        // Static game over text removed in favor of GameResultOverlay
       ],
+    );
+  }
+}
+
+class _HeaderInteractiveContainer extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onTap;
+
+  const _HeaderInteractiveContainer({
+    required this.child,
+    required this.onTap,
+  });
+
+  @override
+  State<_HeaderInteractiveContainer> createState() => _HeaderInteractiveContainerState();
+}
+
+class _HeaderInteractiveContainerState extends State<_HeaderInteractiveContainer> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.05)
+                : DesignTokens.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _isHovered
+                  ? DesignTokens.primaryNeonCyan
+                  : DesignTokens.primaryNeonCyan.withValues(alpha: 0.6),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: _isHovered
+                    ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.35)
+                    : DesignTokens.primaryNeonCyan.withValues(alpha: 0.15),
+                blurRadius: _isHovered ? 20 : 15,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: widget.child,
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/ui/neon_orb.dart';
 import '../../domain/entities/game_color.dart';
 import '../providers/game_provider.dart';
@@ -15,7 +16,7 @@ class ColorPalette extends ConsumerWidget {
     // Pill container — matches Stitch: bg-surface-container-lowest, border outline-variant/30
     // flex-shrink-0: natural intrinsic width, does NOT expand (SubmitButton gets Expanded instead)
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
       decoration: BoxDecoration(
         color: const Color(0xFF0E0E0E), // surface-container-lowest
         borderRadius: BorderRadius.circular(999),
@@ -28,7 +29,7 @@ class ColorPalette extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: validColors.map((color) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 2.5),
             child: GestureDetector(
               onTap: () =>
                   ref.read(gameStateProvider.notifier).addColor(color),
@@ -41,16 +42,50 @@ class ColorPalette extends ConsumerWidget {
   }
 }
 
-class _PaletteOrb extends StatelessWidget {
+class _PaletteOrb extends StatefulWidget {
   final GameColor color;
 
-  const _PaletteOrb({required this.color});
+  const _PaletteOrb({required this.color, super.key});
+
+  @override
+  State<_PaletteOrb> createState() => _PaletteOrbState();
+}
+
+class _PaletteOrbState extends State<_PaletteOrb> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    return NeonOrb(
-      gameColor: color,
-      size: 40,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: _isHovered
+                ? DesignTokens.primaryNeonCyan
+                : Colors.transparent,
+            width: 1.5,
+          ),
+          boxShadow: _isHovered
+              ? [
+                  BoxShadow(
+                    color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
+                    blurRadius: 6,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : null,
+        ),
+        child: NeonOrb(
+          gameColor: widget.color,
+          size: 32,
+        ),
+      ),
     );
   }
 }

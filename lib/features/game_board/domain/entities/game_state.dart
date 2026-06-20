@@ -16,6 +16,7 @@ class GameState {
   final GameStatus status;
   final int maxAttempts;
   final SecurityProtocol protocol;
+  final String? selectedQuote;
 
   const GameState({
     this.gameId = 0,
@@ -25,6 +26,7 @@ class GameState {
     this.status = GameStatus.playing,
     this.maxAttempts = 10,
     this.protocol = SecurityProtocol.novice,
+    this.selectedQuote,
   });
 
   int get slotCount => (protocol == SecurityProtocol.novice || protocol == SecurityProtocol.breacher) ? 4 : 5;
@@ -50,6 +52,7 @@ class GameState {
     GameStatus? status,
     int? maxAttempts,
     SecurityProtocol? protocol,
+    String? selectedQuote,
   }) {
     return GameState(
       gameId: gameId ?? this.gameId,
@@ -59,6 +62,7 @@ class GameState {
       status: status ?? this.status,
       maxAttempts: maxAttempts ?? this.maxAttempts,
       protocol: protocol ?? this.protocol,
+      selectedQuote: selectedQuote ?? this.selectedQuote,
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:colour_breaker/features/game_board/domain/entities/game_color.da
 import 'package:colour_breaker/features/game_board/domain/entities/game_state.dart';
 import 'package:colour_breaker/features/game_board/domain/entities/guess.dart';
 import 'package:colour_breaker/features/game_board/domain/entities/security_protocol.dart';
+import 'package:colour_breaker/features/game_board/domain/entities/number_quotes.dart';
 import 'package:colour_breaker/features/game_board/domain/use_cases/game_engine.dart';
 import 'package:colour_breaker/features/game_board/presentation/providers/game_provider.dart';
 import 'package:colour_breaker/features/level_selection/presentation/providers/level_selection_provider.dart';
@@ -196,6 +197,39 @@ void main() {
       // Novice should dynamically generate an 11th row!
       expect(state.maxAttempts, 11);
       expect(state.status, GameStatus.playing);
+    });
+  });
+
+  group('NumberQuotes and SelectedQuote tests', () {
+    test('Retrieve random quotes for 1 to 15 attempts', () {
+      for (int i = 1; i <= 15; i++) {
+        final quote = NumberQuotes.getRandomQuote(i);
+        expect(quote, isNotNull);
+        expect(quote!.isNotEmpty, isTrue);
+      }
+    });
+
+    test('Return null for attempts > 15', () {
+      final quote = NumberQuotes.getRandomQuote(16);
+      expect(quote, isNull);
+    });
+
+    test('Selects quote on game won', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      
+      final notifier = container.read(gameStateProvider.notifier);
+      final solution = notifier.debugSolution;
+
+      // Make a winning guess
+      for (final color in solution.colors) {
+        notifier.addColor(color);
+      }
+      notifier.submitGuess();
+
+      final state = container.read(gameStateProvider);
+      expect(state.status, GameStatus.won);
+      expect(state.selectedQuote, isNotNull);
     });
   });
 }

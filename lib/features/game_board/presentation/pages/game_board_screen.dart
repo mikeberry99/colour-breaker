@@ -11,8 +11,31 @@ import '../widgets/color_palette.dart';
 import '../widgets/submit_button.dart';
 import '../providers/game_provider.dart';
 import '../widgets/guess_counter_badge.dart';
+import '../widgets/game_result_overlay.dart';
+import '../providers/reveal_animation_provider.dart';
+import '../../domain/entities/game_state.dart';
 
-class GameBoardScreen extends StatelessWidget {
+class OverlayDismissedNotifier extends Notifier<bool> {
+  @override
+  bool build() {
+    final status = ref.watch(gameStateProvider.select((s) => s.status));
+    if (status == GameStatus.playing) {
+      return false;
+    }
+    return false;
+  }
+
+  void dismiss() {
+    state = true;
+  }
+}
+
+final overlayDismissedProvider =
+    NotifierProvider.autoDispose<OverlayDismissedNotifier, bool>(
+  OverlayDismissedNotifier.new,
+);
+
+class GameBoardScreen extends ConsumerWidget {
   const GameBoardScreen({super.key});
 
   Widget _buildAppBar(BuildContext context) {
@@ -85,7 +108,12 @@ class GameBoardScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gameState = ref.watch(gameStateProvider);
+    final animation = ref.watch(revealAnimationProvider);
+    final isGameOver = gameState.status != GameStatus.playing && !animation.isAnimating;
+    final isDismissed = ref.watch(overlayDismissedProvider);
+
     return Scaffold(
       backgroundColor: DesignTokens.background,
       drawer: Theme(
@@ -138,11 +166,20 @@ class GameBoardScreen extends StatelessWidget {
               child: Center(
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                  child: const Column(
+                  child: Column(
                     children: [
-                      HeaderWidget(),
-                      SizedBox(height: 12),
-                      Expanded(
+                      const HeaderWidget(),
+                      if (isGameOver && !isDismissed) ...[
+                        const SizedBox(height: 12),
+                        GameResultOverlay(
+                          gameState: gameState,
+                          onClose: () {
+                            ref.read(overlayDismissedProvider.notifier).dismiss();
+                          },
+                        ),
+                      ],
+                      const SizedBox(height: 12),
+                      const Expanded(
                         child: SingleChildScrollView(
                           padding: EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
                           child: Column(

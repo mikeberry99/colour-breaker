@@ -4,6 +4,7 @@ import '../../domain/entities/guess.dart';
 import '../../domain/entities/game_state.dart';
 import '../../domain/entities/feedback_pegs.dart';
 import '../../domain/entities/security_protocol.dart';
+import '../../domain/entities/number_quotes.dart';
 import '../../domain/use_cases/game_engine.dart';
 import '../../../level_selection/presentation/providers/level_selection_provider.dart';
 import 'dart:math';
@@ -67,9 +68,11 @@ class GameStateNotifier extends Notifier<GameState> {
     
     GameStatus newStatus = GameStatus.playing;
     int newMaxAttempts = state.maxAttempts;
+    String? selectedQuote;
 
     if (feedback.isWin(state.slotCount)) {
       newStatus = GameStatus.won;
+      selectedQuote = NumberQuotes.getRandomQuote(newHistory.length);
     } else {
       if (newHistory.length >= state.maxAttempts) {
         if (state.maxAttempts < state.absoluteMaxAttempts) {
@@ -86,6 +89,7 @@ class GameStateNotifier extends Notifier<GameState> {
       activeGuess: const Guess(colors: []),
       status: newStatus,
       maxAttempts: newMaxAttempts,
+      selectedQuote: selectedQuote,
     );
   }
 
