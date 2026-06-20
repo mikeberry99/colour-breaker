@@ -32,7 +32,7 @@ void main() {
     await tester.tap(connectButton);
     await tester.pumpAndSettle();
 
-    // Verify that we navigated to the Game Board screen (which contains the debug solution indicator)
-    expect(find.text('🔓 DEBUG: SOLUTION VISIBLE'), findsOneWidget);
+    // Verify that we navigated to the Game Board screen (which contains the protocol label in the hidden solution)
+    expect(find.textContaining('Protocol:'), findsOneWidget);
   });
 }

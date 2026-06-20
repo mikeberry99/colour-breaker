@@ -138,7 +138,7 @@ class HistoryLog extends ConsumerWidget {
                         AnimatedOpacity(
                           duration: const Duration(milliseconds: 250),
                           opacity: pegsVisible ? 1.0 : 0.0,
-                          child: _buildFeedback(protocol, greenPegs, yellowPegs),
+                          child: _buildFeedback(context, protocol, greenPegs, yellowPegs),
                         ),
                       ],
                     ),
@@ -206,7 +206,7 @@ class HistoryLog extends ConsumerWidget {
                             );
                           }),
                         ),
-                        _buildFeedback(gameState.protocol, 0, 0, isEmptyRow: true),
+                        _buildFeedback(context, gameState.protocol, 0, 0, isEmptyRow: true),
                       ],
                     ),
                   ),
@@ -219,7 +219,7 @@ class HistoryLog extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeedback(SecurityProtocol protocol, int greenPegs, int yellowPegs, {bool isEmptyRow = false}) {
+  Widget _buildFeedback(BuildContext context, SecurityProtocol protocol, int greenPegs, int yellowPegs, {bool isEmptyRow = false}) {
     final int pegCount = (protocol == SecurityProtocol.novice || protocol == SecurityProtocol.breacher) ? 4 : 5;
     final List<_PegData> pegData = [];
     if (!isEmptyRow) {
@@ -238,11 +238,22 @@ class HistoryLog extends ConsumerWidget {
       }
     }
 
+    final child = pegCount == 4
+        ? _FeedbackSquare(pegs: pegData)
+        : _FeedbackRing(pegs: pegData);
+
     return Padding(
       padding: const EdgeInsets.only(right: DesignTokens.gutter),
-      child: pegCount == 4
-          ? _FeedbackSquare(pegs: pegData)
-          : _FeedbackRing(pegs: pegData),
+      child: _FeedbackInteractiveContainer(
+        onTap: () {
+          showDialog(
+            context: context,
+            barrierColor: Colors.black.withValues(alpha: 0.7),
+            builder: (context) => const _FeedbackExplanationDialog(),
+          );
+        },
+        child: child,
+      ),
     );
   }
 }
@@ -299,23 +310,7 @@ class _FeedbackSquare extends StatelessWidget {
   }
 
   Widget _buildPeg(_PegData peg) {
-    return Container(
-      width: pegSize,
-      height: pegSize,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: peg.color,
-        boxShadow: peg.isGlow
-            ? [
-                BoxShadow(
-                  color: peg.color.withValues(alpha: 0.6),
-                  blurRadius: 5,
-                  spreadRadius: 1,
-                ),
-              ]
-            : null,
-      ),
-    );
+    return _PegWidget(peg: peg, size: pegSize);
   }
 }
 
@@ -348,28 +343,69 @@ class _FeedbackRing extends StatelessWidget {
 
           return Transform.translate(
             offset: Offset(dx, dy),
-            child: Container(
-              width: pegSize,
-              height: pegSize,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: peg.color,
-                boxShadow: peg.isGlow
-                    ? [
-                        BoxShadow(
-                          color: peg.color.withValues(alpha: 0.6),
-                          blurRadius: 5,
-                          spreadRadius: 1,
-                        ),
-                      ]
-                    : null,
-              ),
-            ),
+            child: _PegWidget(peg: peg, size: pegSize),
           );
         }),
       ),
     );
   }
+}
+
+class _PegWidget extends StatelessWidget {
+  final _PegData peg;
+  final double size;
+
+  const _PegWidget({
+    required this.peg,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isYellow = peg.color == DesignTokens.feedbackYellow;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: peg.color,
+        boxShadow: peg.isGlow
+            ? [
+                BoxShadow(
+                  color: peg.color.withValues(alpha: 0.6),
+                  blurRadius: 5,
+                  spreadRadius: 1,
+                ),
+              ]
+            : null,
+      ),
+      child: isYellow
+          ? CustomPaint(
+              size: Size(size, size),
+              painter: _CenterDotPainter(),
+            )
+          : null,
+    );
+  }
+}
+
+class _CenterDotPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = DesignTokens.background
+      ..style = PaintingStyle.fill;
+
+    // Draw a small dot at the center of the 10px peg
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height / 2),
+      1.5,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _AnimatedEmptyRow extends StatefulWidget {
@@ -425,6 +461,202 @@ class _AnimatedEmptyRowState extends State<_AnimatedEmptyRow>
         );
       },
       child: widget.child,
+    );
+  }
+}
+
+class _FeedbackInteractiveContainer extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onTap;
+
+  const _FeedbackInteractiveContainer({
+    required this.child,
+    required this.onTap,
+  });
+
+  @override
+  State<_FeedbackInteractiveContainer> createState() => _FeedbackInteractiveContainerState();
+}
+
+class _FeedbackInteractiveContainerState extends State<_FeedbackInteractiveContainer> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.05)
+                : Colors.white.withValues(alpha: 0.02),
+            borderRadius: BorderRadius.circular(DesignTokens.radiusDefault),
+            border: Border.all(
+              color: _isHovered
+                  ? DesignTokens.primaryNeonCyan
+                  : DesignTokens.primaryNeonCyan.withValues(alpha: 0.2),
+              width: 1,
+            ),
+            boxShadow: _isHovered
+                ? [
+                    BoxShadow(
+                      color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.25),
+                      blurRadius: 4,
+                      spreadRadius: 0,
+                    ),
+                  ]
+                : null,
+          ),
+          alignment: Alignment.center,
+          child: widget.child,
+        ),
+      ),
+    );
+  }
+}
+
+class _FeedbackExplanationDialog extends StatelessWidget {
+  const _FeedbackExplanationDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 320),
+        decoration: BoxDecoration(
+          color: DesignTokens.background,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusDefault),
+          border: Border.all(
+            color: DesignTokens.primaryNeonCyan,
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.25),
+              blurRadius: 12,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(DesignTokens.gutter),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'SEQUENCE FEEDBACK',
+                    style: TextStyle(
+                      fontFamily: DesignTokens.labelFont,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: DesignTokens.primaryNeonCyan,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Icon(
+                        Icons.close,
+                        size: 20,
+                        color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Container(
+                height: 1,
+                color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const _PegWidget(
+                    peg: _PegData(DesignTokens.feedbackGreen, isGlow: true),
+                    size: 10,
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Text(
+                      'Green = Correct colour, correct location',
+                      style: TextStyle(
+                        fontFamily: DesignTokens.bodyFont,
+                        fontSize: 13,
+                        color: DesignTokens.onSurface,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const _PegWidget(
+                    peg: _PegData(DesignTokens.feedbackYellow, isGlow: true),
+                    size: 10,
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Text(
+                      'Yellow = Correct colour, wrong location',
+                      style: TextStyle(
+                        fontFamily: DesignTokens.bodyFont,
+                        fontSize: 13,
+                        color: DesignTokens.onSurface,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(
+                    foregroundColor: DesignTokens.primaryNeonCyan,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusDefault),
+                      side: BorderSide(
+                        color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.5),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'CLOSE',
+                    style: TextStyle(
+                      fontFamily: DesignTokens.labelFont,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

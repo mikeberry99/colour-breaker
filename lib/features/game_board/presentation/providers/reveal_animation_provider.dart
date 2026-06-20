@@ -29,8 +29,9 @@ class RevealAnimationState {
     bool clearAnimatingRow = false,
   }) {
     return RevealAnimationState(
-      animatingRowIndex:
-          clearAnimatingRow ? null : (animatingRowIndex ?? this.animatingRowIndex),
+      animatingRowIndex: clearAnimatingRow
+          ? null
+          : (animatingRowIndex ?? this.animatingRowIndex),
       revealedColors: revealedColors ?? this.revealedColors,
       pegsVisible: pegsVisible ?? this.pegsVisible,
     );
@@ -39,7 +40,7 @@ class RevealAnimationState {
 
 class RevealAnimationNotifier extends Notifier<RevealAnimationState> {
   Timer? _timer;
-  static const _stepDuration = Duration(milliseconds: 250);
+  static const _stepDuration = Duration(milliseconds: 150);
 
   @override
   RevealAnimationState build() => const RevealAnimationState();
@@ -50,7 +51,10 @@ class RevealAnimationNotifier extends Notifier<RevealAnimationState> {
     _timer?.cancel();
 
     final protocol = ref.read(selectedProtocolProvider);
-    final slotCount = (protocol == SecurityProtocol.novice || protocol == SecurityProtocol.breacher) ? 4 : 5;
+    final slotCount = (protocol == SecurityProtocol.novice ||
+            protocol == SecurityProtocol.breacher)
+        ? 4
+        : 5;
 
     state = RevealAnimationState(
       animatingRowIndex: rowIndex,
@@ -61,7 +65,8 @@ class RevealAnimationNotifier extends Notifier<RevealAnimationState> {
     _scheduleNext(rowIndex, slotCount: slotCount, step: 0);
   }
 
-  void _scheduleNext(int rowIndex, {required int slotCount, required int step}) {
+  void _scheduleNext(int rowIndex,
+      {required int slotCount, required int step}) {
     _timer = Timer(_stepDuration, () {
       if (step < slotCount) {
         // Reveal next colour orb
