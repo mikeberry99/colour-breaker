@@ -94,7 +94,7 @@ class HeaderWidget extends ConsumerWidget {
                                     gameColor: color,
                                   )
                                 : _LockedSlot(
-                                    key: const ValueKey('locked'),
+                                    key: ValueKey('locked-$index'),
                                     size: 40,
                                   ),
                           ),

@@ -159,42 +159,54 @@ class GameBoardScreen extends ConsumerWidget {
         ),
       ),
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            _buildAppBar(context),
-            Expanded(
-              child: Center(
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                  child: Column(
-                    children: [
-                      const HeaderWidget(),
-                      if (isGameOver && !isDismissed) ...[
-                        const SizedBox(height: 12),
-                        GameResultOverlay(
-                          gameState: gameState,
-                          onClose: () {
-                            ref.read(overlayDismissedProvider.notifier).dismiss();
-                          },
-                        ),
-                      ],
-                      const SizedBox(height: 12),
-                      const Expanded(
-                        child: SingleChildScrollView(
-                          padding: EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
-                          child: Column(
-                            children: [
-                              HistoryLog(),
-                              SizedBox(height: 24),
-                            ],
+            Column(
+              children: [
+                _buildAppBar(context),
+                Expanded(
+                  child: Center(
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
+                      child: const Column(
+                        children: [
+                          HeaderWidget(),
+                          SizedBox(height: 12),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              padding: EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
+                              child: Column(
+                                children: [
+                                  HistoryLog(),
+                                  SizedBox(height: 24),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (isGameOver && !isDismissed)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  child: Center(
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
+                      child: GameResultOverlay(
+                        gameState: gameState,
+                        onClose: () {
+                          ref.read(overlayDismissedProvider.notifier).dismiss();
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -232,7 +244,7 @@ class _CustomSideDrawer extends ConsumerWidget {
                     child: Text(
                       'TERMINAL',
                       style: TextStyle(
-                        fontFamily: 'JetBrains Mono',
+                        fontFamily: DesignTokens.labelFont,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: DesignTokens.primaryNeonCyan,
@@ -296,7 +308,7 @@ class _DrawerItem extends StatelessWidget {
             Text(
               label,
               style: const TextStyle(
-                fontFamily: 'JetBrains Mono',
+                fontFamily: DesignTokens.labelFont,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,

@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
-import '../../domain/entities/game_state.dart';
 import '../../domain/entities/security_protocol.dart';
 import '../providers/game_provider.dart';
 

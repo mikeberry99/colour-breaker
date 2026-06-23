@@ -53,6 +53,7 @@ class GameState {
     int? maxAttempts,
     SecurityProtocol? protocol,
     String? selectedQuote,
+    bool clearSelectedQuote = false,
   }) {
     return GameState(
       gameId: gameId ?? this.gameId,
@@ -62,7 +63,7 @@ class GameState {
       status: status ?? this.status,
       maxAttempts: maxAttempts ?? this.maxAttempts,
       protocol: protocol ?? this.protocol,
-      selectedQuote: selectedQuote ?? this.selectedQuote,
+      selectedQuote: clearSelectedQuote ? null : (selectedQuote ?? this.selectedQuote),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../theme/design_tokens.dart';
 import 'package:colour_breaker/features/game_board/domain/entities/game_color.dart';
 
 class NeonOrb extends StatelessWidget {
@@ -29,8 +30,8 @@ class NeonOrb extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: const RadialGradient(
-            colors: [Color(0xFF1E1E1E), Color(0xFF2A2A2A)],
+          gradient: RadialGradient(
+            colors: [DesignTokens.boardSurface, DesignTokens.surfaceContainerHigh],
             center: Alignment.center,
             radius: 0.8,
           ),

@@ -21,7 +21,7 @@ class ColorPalette extends ConsumerWidget {
         color: const Color(0xFF0E0E0E), // surface-container-lowest
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: const Color(0xFF3B494B)
+          color: DesignTokens.outlineVariant
               .withValues(alpha: 0.3), // outline-variant/30
         ),
       ),
@@ -30,10 +30,14 @@ class ColorPalette extends ConsumerWidget {
         children: validColors.map((color) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2.5),
-            child: GestureDetector(
-              onTap: () =>
-                  ref.read(gameStateProvider.notifier).addColor(color),
-              child: _PaletteOrb(color: color),
+            child: Semantics(
+              label: '${color.name} colour',
+              button: true,
+              child: GestureDetector(
+                onTap: () =>
+                    ref.read(gameStateProvider.notifier).addColor(color),
+                child: _PaletteOrb(color: color),
+              ),
             ),
           );
         }).toList(),
@@ -45,7 +49,7 @@ class ColorPalette extends ConsumerWidget {
 class _PaletteOrb extends StatefulWidget {
   final GameColor color;
 
-  const _PaletteOrb({required this.color, super.key});
+  const _PaletteOrb({required this.color});
 
   @override
   State<_PaletteOrb> createState() => _PaletteOrbState();
@@ -74,7 +78,7 @@ class _PaletteOrbState extends State<_PaletteOrb> {
           boxShadow: _isHovered
               ? [
                   BoxShadow(
-                    color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
+                     color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
                     blurRadius: 6,
                     spreadRadius: 1,
                   ),
@@ -83,7 +87,7 @@ class _PaletteOrbState extends State<_PaletteOrb> {
         ),
         child: NeonOrb(
           gameColor: widget.color,
-          size: 32,
+          size: 38,
         ),
       ),
     );

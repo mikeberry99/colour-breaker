@@ -570,10 +570,16 @@ class _FeedbackExplanationDialog extends StatelessWidget {
                     onTap: () => Navigator.of(context).pop(),
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
-                      child: Icon(
-                        Icons.close,
-                        size: 20,
-                        color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.7),
+                      child: SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: Center(
+                          child: Icon(
+                            Icons.close,
+                            size: 20,
+                            color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.7),
+                          ),
+                        ),
                       ),
                     ),
                   ),

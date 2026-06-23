@@ -1,9 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/game_color.dart';
 import '../../domain/entities/guess.dart';
 import '../../domain/entities/game_state.dart';
 import '../../domain/entities/feedback_pegs.dart';
-import '../../domain/entities/security_protocol.dart';
 import '../../domain/entities/number_quotes.dart';
 import '../../domain/use_cases/game_engine.dart';
 import '../../../level_selection/presentation/providers/level_selection_provider.dart';
@@ -28,9 +28,9 @@ class GameStateNotifier extends Notifier<GameState> {
     final random = Random();
     final validColors = GameColor.values.where((c) => c != GameColor.empty).toList();
     List<GameColor> solutionColors = [];
-    final slotCount = (protocol == SecurityProtocol.novice || protocol == SecurityProtocol.breacher) ? 4 : 5;
+    final slotCount = protocol.slotCount;
 
-    if (protocol == SecurityProtocol.expert) {
+    if (protocol == SecurityProtocol.expert || protocol == SecurityProtocol.novice) {
       final shuffledColors = List<GameColor>.from(validColors)..shuffle(random);
       solutionColors = shuffledColors.sublist(0, slotCount);
     } else {
@@ -39,6 +39,10 @@ class GameStateNotifier extends Notifier<GameState> {
       }
     }
     _hiddenSolution = Guess(colors: solutionColors);
+    if (kDebugMode) {
+      // ignore: avoid_print
+      print('DEBUG: Hidden solution: ${solutionColors.map((c) => c.name).toList()}');
+    }
   }
 
   void addColor(GameColor color) {
@@ -104,6 +108,7 @@ class GameStateNotifier extends Notifier<GameState> {
   }
 
   void restartLevel() {
+    _generateSolution(state.protocol);
     state = GameState(
       gameId: state.gameId + 1,
       protocol: state.protocol,
@@ -115,5 +120,8 @@ class GameStateNotifier extends Notifier<GameState> {
   Guess? get revealedSolution => state.status != GameStatus.playing ? _hiddenSolution : null;
 
   // DEBUG ONLY: always exposes the hidden solution for testing
-  Guess get debugSolution => _hiddenSolution;
+  Guess get debugSolution {
+    assert(() { return true; }(), 'debugSolution should only be used in debug/test mode');
+    return _hiddenSolution;
+  }
 }

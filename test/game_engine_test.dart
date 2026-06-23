@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:colour_breaker/features/game_board/domain/entities/game_color.dart';
 import 'package:colour_breaker/features/game_board/domain/entities/game_state.dart';
 import 'package:colour_breaker/features/game_board/domain/entities/guess.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/security_protocol.dart';
 import 'package:colour_breaker/features/game_board/domain/entities/number_quotes.dart';
 import 'package:colour_breaker/features/game_board/domain/use_cases/game_engine.dart';
 import 'package:colour_breaker/features/game_board/presentation/providers/game_provider.dart';
@@ -109,7 +108,7 @@ void main() {
       container.dispose();
     });
 
-    test('Initializes Novice with 4 slots and 10 max attempts', () {
+    test('Initializes Novice with 4 slots and initial maxAttempts of 10', () {
       final state = container.read(gameStateProvider);
       expect(state.protocol, SecurityProtocol.novice);
       expect(state.slotCount, 4);
@@ -120,7 +119,7 @@ void main() {
       expect(notifier.debugSolution.colors.length, 4);
     });
 
-    test('Initializes Expert with 5 slots and 10 max attempts', () {
+    test('Initializes Expert with 5 slots and initial maxAttempts of 10', () {
       container.read(selectedProtocolProvider.notifier).setProtocol(SecurityProtocol.expert);
       final state = container.read(gameStateProvider);
       expect(state.protocol, SecurityProtocol.expert);

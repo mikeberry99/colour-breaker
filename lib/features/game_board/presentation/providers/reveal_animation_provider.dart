@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/security_protocol.dart';
 import '../../../level_selection/presentation/providers/level_selection_provider.dart';
 
 /// Holds the animation state for the most recently submitted guess row.
@@ -43,7 +42,10 @@ class RevealAnimationNotifier extends Notifier<RevealAnimationState> {
   static const _stepDuration = Duration(milliseconds: 150);
 
   @override
-  RevealAnimationState build() => const RevealAnimationState();
+  RevealAnimationState build() {
+    ref.onDispose(() => _timer?.cancel());
+    return const RevealAnimationState();
+  }
 
   /// Call this immediately after a guess is committed to the game state.
   /// [rowIndex] is the 0-based index of the newly added history row.
@@ -51,10 +53,7 @@ class RevealAnimationNotifier extends Notifier<RevealAnimationState> {
     _timer?.cancel();
 
     final protocol = ref.read(selectedProtocolProvider);
-    final slotCount = (protocol == SecurityProtocol.novice ||
-            protocol == SecurityProtocol.breacher)
-        ? 4
-        : 5;
+    final slotCount = protocol.slotCount;
 
     state = RevealAnimationState(
       animatingRowIndex: rowIndex,

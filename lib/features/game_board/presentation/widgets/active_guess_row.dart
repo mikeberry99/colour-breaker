@@ -25,41 +25,47 @@ class ActiveGuessRow extends ConsumerWidget {
           final color = hasColor ? activeGuess.colors[index] : GameColor.empty;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: GestureDetector(
-              onTap: hasColor && isPlaying
-                  ? () {
-                      // tap a filled slot to remove it (remove from index onwards)
-                      ref.read(gameStateProvider.notifier).removeColor();
-                    }
-                  : null,
-              child: TweenAnimationBuilder<Color?>(
-                duration: const Duration(milliseconds: 200),
-                tween: ColorTween(
-                  begin: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
-                  end: hasColor
-                      ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.8)
-                      : DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
-                ),
-                builder: (context, animatedColor, child) {
-                  return CustomPaint(
-                    painter: DashedCirclePainter(
-                      color: animatedColor ??
-                          DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
-                      strokeWidth: 2,
-                      dashCount: 16,
-                    ),
-                    child: SizedBox(
-                      width: 46,
-                      height: 46,
-                      child: Center(
-                        child: NeonOrb(
-                          size: 32,
-                          gameColor: color,
+            child: Semantics(
+              label: hasColor
+                  ? 'Slot ${index + 1}: ${activeGuess.colors[index].name}'
+                  : 'Slot ${index + 1}: empty',
+              button: hasColor && isPlaying,
+              child: GestureDetector(
+                onTap: hasColor && isPlaying
+                    ? () {
+                        // tap a filled slot to remove it (remove from index onwards)
+                        ref.read(gameStateProvider.notifier).removeColor();
+                      }
+                    : null,
+                child: TweenAnimationBuilder<Color?>(
+                  duration: const Duration(milliseconds: 200),
+                  tween: ColorTween(
+                    begin: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
+                    end: hasColor
+                        ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.8)
+                        : DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
+                  ),
+                  builder: (context, animatedColor, child) {
+                    return CustomPaint(
+                      painter: DashedCirclePainter(
+                        color: animatedColor ??
+                            DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
+                        strokeWidth: 2,
+                        dashCount: 16,
+                      ),
+                      child: SizedBox(
+                        width: 46,
+                        height: 46,
+                        child: Center(
+                          child: NeonOrb(
+                            size: 32,
+                            gameColor: color,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           );

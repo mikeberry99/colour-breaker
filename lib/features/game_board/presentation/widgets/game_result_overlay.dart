@@ -57,10 +57,16 @@ class GameResultOverlay extends StatelessWidget {
                   onTap: onClose,
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
-                    child: Icon(
-                      Icons.close,
-                      size: 20,
-                      color: color.withValues(alpha: 0.7),
+                    child: SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: Center(
+                        child: Icon(
+                          Icons.close,
+                          size: 20,
+                          color: color.withValues(alpha: 0.7),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -108,14 +114,19 @@ class GameResultOverlay extends StatelessWidget {
                     ),
                   ),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.lightbulb_outline_rounded,
-                        color: color.withValues(alpha: 0.8),
-                        size: 16,
+                      Text(
+                        '$attempts',
+                        style: TextStyle(
+                          fontFamily: DesignTokens.headlineFont,
+                          fontSize: 48,
+                          fontWeight: FontWeight.w800,
+                          color: color,
+                          height: 1.0,
+                        ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Text(
                           gameState.selectedQuote!,
