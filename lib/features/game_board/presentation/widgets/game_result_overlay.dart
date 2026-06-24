@@ -6,11 +6,13 @@ import '../../domain/entities/game_state.dart';
 class GameResultOverlay extends StatelessWidget {
   final GameState gameState;
   final VoidCallback onClose;
+  final VoidCallback onNewGame;
 
   const GameResultOverlay({
     super.key,
     required this.gameState,
     required this.onClose,
+    required this.onNewGame,
   });
 
   @override
@@ -92,17 +94,7 @@ class GameResultOverlay extends StatelessWidget {
             const SizedBox(height: 8),
             // Subtext Description
             if (isWin) ...[
-              Text(
-                'Congratulations, you solved the sequence in $attempts attempts',
-                style: const TextStyle(
-                  fontFamily: DesignTokens.bodyFont,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: DesignTokens.onSurface,
-                ),
-              ),
               if (gameState.selectedQuote != null) ...[
-                const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -142,7 +134,17 @@ class GameResultOverlay extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 12),
               ],
+              Text(
+                'Congratulations, you solved the sequence in $attempts attempts',
+                style: const TextStyle(
+                  fontFamily: DesignTokens.bodyFont,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: DesignTokens.onSurface,
+                ),
+              ),
             ] else ...[
               const Text(
                 'Mission failed. Try again',
@@ -154,7 +156,78 @@ class GameResultOverlay extends StatelessWidget {
                 ),
               ),
             ],
+            const SizedBox(height: 20),
+            _NewGameButton(
+              color: color,
+              onTap: onNewGame,
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NewGameButton extends StatefulWidget {
+  final Color color;
+  final VoidCallback onTap;
+
+  const _NewGameButton({
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  State<_NewGameButton> createState() => _NewGameButtonState();
+}
+
+class _NewGameButtonState extends State<_NewGameButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? widget.color.withValues(alpha: 0.1)
+                : Colors.white.withValues(alpha: 0.03),
+            borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
+            border: Border.all(
+              color: _isHovered
+                  ? widget.color
+                  : widget.color.withValues(alpha: 0.4),
+              width: 2,
+            ),
+            boxShadow: _isHovered
+                ? [
+                    BoxShadow(
+                      color: widget.color.withValues(alpha: 0.25),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    )
+                  ]
+                : null,
+          ),
+          child: Text(
+            'NEW GAME ?',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: DesignTokens.labelFont,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+              color: widget.color,
+            ),
+          ),
         ),
       ),
     );

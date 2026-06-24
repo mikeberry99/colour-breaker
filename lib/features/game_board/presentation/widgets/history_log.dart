@@ -323,7 +323,7 @@ class _FeedbackRing extends StatelessWidget {
 
   const _FeedbackRing({
     required this.pegs,
-  }) : radius = 16, pegSize = 10;
+  }) : radius = 14, pegSize = 10;
 
   @override
   Widget build(BuildContext context) {

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../providers/level_selection_provider.dart';
 import '../widgets/level_option_card.dart';
+import '../widgets/seed_entry_dialog.dart';
 
 class LevelSelectionScreen extends ConsumerWidget {
   const LevelSelectionScreen({super.key});
@@ -167,6 +168,19 @@ class LevelSelectionScreen extends ConsumerWidget {
                   const SizedBox(width: 8),
                   Row(
                     children: [
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const SeedEntryDialog(),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.vpn_key_outlined,
+                          color: DesignTokens.onSurfaceVariant,
+                        ),
+                        tooltip: 'Enter Session Seed',
+                      ),
                       IconButton(
                         onPressed: () {
                           // Standard help dialog / toast placeholder

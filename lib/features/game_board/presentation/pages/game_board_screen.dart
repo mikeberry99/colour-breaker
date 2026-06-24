@@ -202,6 +202,10 @@ class GameBoardScreen extends ConsumerWidget {
                         onClose: () {
                           ref.read(overlayDismissedProvider.notifier).dismiss();
                         },
+                        onNewGame: () {
+                          ref.read(gameStateProvider.notifier).restartGame();
+                          context.go('/');
+                        },
                       ),
                     ),
                   ),

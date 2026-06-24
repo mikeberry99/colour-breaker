@@ -17,7 +17,14 @@ class GameStateNotifier extends Notifier<GameState> {
   @override
   GameState build() {
     final protocol = ref.watch(selectedProtocolProvider);
-    _generateSolution(protocol);
+    final sessionSeed = ref.watch(sessionSeedProvider);
+    
+    if (sessionSeed != null && sessionSeed.protocol == protocol) {
+      _hiddenSolution = Guess(colors: sessionSeed.sequence);
+    } else {
+      _generateSolution(protocol);
+    }
+    
     return GameState(
       protocol: protocol,
       maxAttempts: 10,
@@ -99,6 +106,7 @@ class GameStateNotifier extends Notifier<GameState> {
 
   void restartGame() {
     final protocol = ref.read(selectedProtocolProvider);
+    ref.read(sessionSeedProvider.notifier).setSeed(null);
     _generateSolution(protocol);
     state = GameState(
       gameId: state.gameId + 1,
@@ -108,6 +116,7 @@ class GameStateNotifier extends Notifier<GameState> {
   }
 
   void restartLevel() {
+    ref.read(sessionSeedProvider.notifier).setSeed(null);
     _generateSolution(state.protocol);
     state = GameState(
       gameId: state.gameId + 1,

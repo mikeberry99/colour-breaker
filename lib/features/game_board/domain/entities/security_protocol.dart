@@ -24,7 +24,7 @@ extension SecurityProtocolExtension on SecurityProtocol {
       case SecurityProtocol.novice:
         return '4-slot sequences with unlimited attempts. Perfect for learning the basic protocols.';
       case SecurityProtocol.breacher:
-        return 'Classic 4-slot sequence, attempts limited. Requires logical precision to bypass the firewall.';
+        return 'Classic 4-slot sequence, colors can repeat and attempts are limited.';
       case SecurityProtocol.expert:
         return 'Upgraded 5-slot sequences. Each color only appears once. Only for those with high-level clearance.';
       case SecurityProtocol.ghost:
