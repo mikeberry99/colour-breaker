@@ -14,6 +14,7 @@ import '../widgets/guess_counter_badge.dart';
 import '../widgets/game_result_overlay.dart';
 import '../providers/reveal_animation_provider.dart';
 import '../../domain/entities/game_state.dart';
+import '../../domain/entities/game_seed.dart';
 
 class OverlayDismissedNotifier extends Notifier<bool> {
   @override
@@ -197,15 +198,22 @@ class GameBoardScreen extends ConsumerWidget {
                   child: Center(
                     child: Container(
                       constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                      child: GameResultOverlay(
-                        gameState: gameState,
-                        onClose: () {
-                          ref.read(overlayDismissedProvider.notifier).dismiss();
-                        },
-                        onNewGame: () {
-                          ref.read(gameStateProvider.notifier).restartGame();
-                          context.go('/');
-                        },
+                      child: Builder(
+                        builder: (context) {
+                          final solution = ref.read(gameStateProvider.notifier).revealedSolution;
+                          final seed = solution != null ? GameSeed.encode(gameState.protocol, solution.colors) : '';
+                          return GameResultOverlay(
+                            gameState: gameState,
+                            sessionSeed: seed,
+                            onClose: () {
+                              ref.read(overlayDismissedProvider.notifier).dismiss();
+                            },
+                            onNewGame: () {
+                              ref.read(gameStateProvider.notifier).restartGame();
+                              context.go('/');
+                            },
+                          );
+                        }
                       ),
                     ),
                   ),

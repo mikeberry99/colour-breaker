@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../../core/theme/design_tokens.dart';
-import '../../../../core/ui/glass_container.dart';
 import '../../domain/entities/game_state.dart';
 
 class GameResultOverlay extends StatelessWidget {
   final GameState gameState;
+  final String sessionSeed;
   final VoidCallback onClose;
   final VoidCallback onNewGame;
 
   const GameResultOverlay({
     super.key,
     required this.gameState,
+    required this.sessionSeed,
     required this.onClose,
     required this.onNewGame,
   });
@@ -20,148 +22,310 @@ class GameResultOverlay extends StatelessWidget {
     final isWin = gameState.status == GameStatus.won;
     final color = isWin ? DesignTokens.feedbackGreen : DesignTokens.feedbackYellow;
     final attempts = gameState.history.length;
+    
+    // Alert text
+    final alertIcon = isWin ? Icons.priority_high : Icons.warning_amber_rounded;
+    final alertText = isWin ? 'Alert: Success' : 'Alert: Failed';
+    final headerText = isWin ? 'System Breached' : 'Access Denied';
+    final subtitleText = isWin ? 'ENCRYPTION BYPASSED' : 'SYSTEM LOCKED';
+    final quoteText = gameState.selectedQuote ?? 'Mission failed. Try again.';
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
-      child: GlassContainer(
-        borderColor: color,
-        isGlowing: true,
-        padding: const EdgeInsets.all(DesignTokens.gutter),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Row (ALERT and Close Button)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.warning_amber_rounded,
-                      color: color,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'ALERT',
-                      style: TextStyle(
-                        fontFamily: DesignTokens.labelFont,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                  ],
+    return Stack(
+      children: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
+            child: Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(maxWidth: 500),
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: DesignTokens.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: color.withValues(alpha: 0.6),
+                  width: 2,
                 ),
-                GestureDetector(
-                  onTap: onClose,
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: SizedBox(
-                      width: 48,
-                      height: 48,
-                      child: Center(
-                        child: Icon(
-                          Icons.close,
-                          size: 20,
-                          color: color.withValues(alpha: 0.7),
-                        ),
-                      ),
-                    ),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.2),
+                    blurRadius: 40,
+                    spreadRadius: 0,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Container(
-              height: 1,
-              color: color.withValues(alpha: 0.2),
-            ),
-            const SizedBox(height: 12),
-            // Large Status Text
-            Text(
-              isWin ? 'SYSTEM BREACHED' : 'ACCESS DENIED',
-              style: TextStyle(
-                fontFamily: DesignTokens.headlineFont,
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-                color: color,
-                letterSpacing: -0.5,
+                ],
               ),
-            ),
-            const SizedBox(height: 8),
-            // Subtext Description
-            if (isWin) ...[
-              if (gameState.selectedQuote != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusDefault),
-                    border: Border.all(
-                      color: color.withValues(alpha: 0.1),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Alert Tag & Close Button Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '$attempts',
-                        style: TextStyle(
-                          fontFamily: DesignTokens.headlineFont,
-                          fontSize: 48,
-                          fontWeight: FontWeight.w800,
-                          color: color,
-                          height: 1.0,
-                        ),
+                      Row(
+                        children: [
+                          Icon(
+                            alertIcon,
+                            color: color,
+                            size: 14,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            alertText.toUpperCase(),
+                            style: TextStyle(
+                              fontFamily: DesignTokens.labelFont,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: color,
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          gameState.selectedQuote!,
-                          style: TextStyle(
-                            fontFamily: DesignTokens.bodyFont,
-                            fontSize: 13,
-                            fontStyle: FontStyle.italic,
+                      GestureDetector(
+                        onTap: onClose,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Icon(
+                            Icons.close,
+                            size: 20,
                             color: DesignTokens.onSurfaceVariant,
-                            height: 1.4,
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 12),
-              ],
-              Text(
-                'Congratulations, you solved the sequence in $attempts attempts',
-                style: const TextStyle(
-                  fontFamily: DesignTokens.bodyFont,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: DesignTokens.onSurface,
-                ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  // Header
+                  Column(
+                    children: [
+                      Text(
+                        headerText.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: DesignTokens.headlineFont,
+                          fontSize: 42, 
+                          height: 1.0,
+                          fontWeight: FontWeight.w800,
+                          color: color,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        subtitleText,
+                        style: const TextStyle(
+                          fontFamily: DesignTokens.labelFont,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: DesignTokens.onSurfaceVariant,
+                          letterSpacing: 2.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Stats
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    decoration: BoxDecoration(
+                      color: DesignTokens.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: DesignTokens.outlineVariant.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'ATTEMPTS',
+                          style: TextStyle(
+                            fontFamily: DesignTokens.labelFont,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: DesignTokens.onSurfaceVariant,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          attempts.toString().padLeft(2, '0'),
+                          style: TextStyle(
+                            fontFamily: DesignTokens.headlineFont,
+                            fontSize: 64,
+                            height: 1.0,
+                            fontWeight: FontWeight.w800,
+                            color: color,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Quote
+                  Text(
+                    '"$quoteText"',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: DesignTokens.bodyFont,
+                      fontSize: 14,
+                      fontStyle: FontStyle.italic,
+                      color: DesignTokens.onSurfaceVariant,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Share Section
+                  if (sessionSeed.isNotEmpty)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: DesignTokens.surfaceContainerHigh,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: DesignTokens.outlineVariant.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'SESSION SEED',
+                                style: TextStyle(
+                                  fontFamily: DesignTokens.labelFont,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: DesignTokens.onSurfaceVariant,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                sessionSeed,
+                                style: const TextStyle(
+                                  fontFamily: DesignTokens.labelFont,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: DesignTokens.primaryNeonCyan,
+                                  letterSpacing: 2.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          _ShareButton(
+                            seed: sessionSeed,
+                            attempts: attempts,
+                            isWin: isWin,
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                  if (sessionSeed.isNotEmpty)
+                    const SizedBox(height: 32),
+                  
+                  // CTA
+                  _NewGameButton(
+                    color: color,
+                    onTap: onNewGame,
+                  ),
+                ],
               ),
-            ] else ...[
-              const Text(
-                'Mission failed. Try again',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ShareButton extends StatefulWidget {
+  final String seed;
+  final int attempts;
+  final bool isWin;
+  
+  const _ShareButton({
+    required this.seed,
+    required this.attempts,
+    required this.isWin,
+  });
+
+  @override
+  State<_ShareButton> createState() => _ShareButtonState();
+}
+
+class _ShareButtonState extends State<_ShareButton> {
+  bool _isHovered = false;
+
+  void _handleShare() {
+    final String text = widget.isWin 
+      ? 'I cracked the Code Hacker sequence in ${widget.attempts} attempts! Seed: ${widget.seed}. Can you beat my score?'
+      : 'Code Hacker proved too tough this time. Seed: ${widget.seed}. Give it a try!';
+      
+    Clipboard.setData(ClipboardData(text: text));
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Seed copied to clipboard!',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: DesignTokens.surfaceContainerHigh,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: _handleShare,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: _isHovered ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.1) : Colors.transparent,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.share,
+                size: 20,
+                color: _isHovered ? DesignTokens.primaryNeonCyan : DesignTokens.primaryNeonCyan.withValues(alpha: 0.8),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'SHARE',
                 style: TextStyle(
-                  fontFamily: DesignTokens.bodyFont,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: DesignTokens.onSurface,
+                  fontFamily: DesignTokens.labelFont,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: _isHovered ? DesignTokens.primaryNeonCyan : DesignTokens.primaryNeonCyan.withValues(alpha: 0.8),
+                  letterSpacing: 1.0,
                 ),
               ),
             ],
-            const SizedBox(height: 20),
-            _NewGameButton(
-              color: color,
-              onTap: onNewGame,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -195,34 +359,32 @@ class _NewGameButtonState extends State<_NewGameButton> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 20),
           decoration: BoxDecoration(
             color: _isHovered
-                ? widget.color.withValues(alpha: 0.1)
-                : Colors.white.withValues(alpha: 0.03),
-            borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
+                ? widget.color.withValues(alpha: 0.2)
+                : widget.color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: _isHovered
-                  ? widget.color
-                  : widget.color.withValues(alpha: 0.4),
+              color: widget.color.withValues(alpha: 0.6),
               width: 2,
             ),
             boxShadow: _isHovered
                 ? [
                     BoxShadow(
-                      color: widget.color.withValues(alpha: 0.25),
-                      blurRadius: 10,
-                      spreadRadius: 1,
+                      color: widget.color.withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      spreadRadius: 0,
                     )
                   ]
                 : null,
           ),
           child: Text(
-            'NEW GAME ?',
+            'PLAY AGAIN?',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: DesignTokens.labelFont,
-              fontSize: 13,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.5,
               color: widget.color,

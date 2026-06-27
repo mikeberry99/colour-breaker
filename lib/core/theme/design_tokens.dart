@@ -8,6 +8,7 @@ class DesignTokens {
   static const Color surfaceContainerHigh = Color(0xFF2A2A2A);
   static const Color surfaceContainerLowest = Color(0xFF0E0E0E);
   static const Color surfaceContainerHighest = Color(0xFF353534);
+  static const Color surfaceContainerLow = Color(0xFF1C1B1B);
   static const Color primaryFixed = Color(0xFF7DF4FF);
   static const Color onSurface = Color(0xFFE5E2E1);
   static const Color onSurfaceVariant = Color(0xFFB9CACB);
