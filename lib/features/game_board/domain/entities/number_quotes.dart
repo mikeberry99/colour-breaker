@@ -3,109 +3,109 @@ import 'dart:math';
 class NumberQuotes {
   static final Map<int, List<String>> _quotes = {
     1: [
-      "One shot, one kill. The absolute pinnacle of precision hacking.",
-      "The singular node. A system breached on the very first exploit.",
-      "The identity element. A flawless operation leaving zero trace.",
-      "First contact. The firewall folded before the first byte could bounce.",
-      "Instant access. The administrator password must have been 'password'."
+      "One - One shot, one kill. The absolute pinnacle of precision hacking.",
+      "One - Instant access. The administrator password must have been 'password'.",
+      "One - The loneliest number. In mathematics, it is the only number that is neither prime nor composite.",
+      "One - A single byte. The building block of digital existence, where every journey begins.",
+      "One - The monad. In philosophy, the indivisible, ultimate unit of existence."
     ],
     2: [
-      "Binary code. Standard 0 and 1, the perfect duo of digital design.",
-      "Double helix. The dual-stranded blueprint of organic code.",
-      "Mitosis. A single cell splits into two, doubling its processing power.",
-      "Dual-core processor. Twice the speed, twice the efficiency.",
-      "Two-factor authentication. A secure second layer that couldn't stop you."
+      "Two - Binary code. The foundation of digital reality, built entirely on zeroes and ones.",
+      "Two - The only even prime. A mathematical anomaly that breaks the rules of divisibility.",
+      "Two - Double helix. The dual-stranded structure of DNA, nature's most elegant database.",
+      "Two - Quantum superposition. A qubit can exist as zero, one, or both simultaneously.",
+      "Two - The twin primes. Pairs of prime numbers that differ by exactly two, an infinite mathematical mystery."
     ],
     3: [
-      "The rule of thirds. A classic formula for visual balance and composition.",
-      "Triangulation. Three nodes are all that's required to pin down any coordinate.",
-      "Triple DES. An old-school cryptographic standard that uses three keys.",
-      "The triangle. The simplest polygon and the strongest structure in geometry.",
-      "Three-way handshake. SYN, SYN-ACK, ACK. The foundation of TCP connections."
+      "Three - The triangle. The simplest polygon and the strongest structure in geometry.",
+      "Three - The three-body problem. In physics, predicting the motion of three celestial bodies is famously chaotic.",
+      "Three - RGB color space. Red, green, and blue combine to create every color on your screen.",
+      "Three - The holy trinity of web development. HTML, CSS, and JavaScript run the modern internet.",
+      "Three - Pi approximation. 3.14 is the universally recognized start to the ratio of a circle's circumference to its diameter."
     ],
     4: [
-      "Four: The Nibble. Half of a byte, and a neat four bits of data.",
-      "Quad-core architecture. Powering smooth multi-threaded computations.",
-      "Four cardinal directions. North, South, East, and West direct our path.",
-      "The tetrahedron. A perfect three-dimensional pyramid with four faces.",
-      "IPv4 address. Expressed as four octets, mapping the classic internet."
+      "Four - The Nibble. Half of a byte, an essential four bits of data in computing history.",
+      "Four - The four color theorem. Any map can be colored with just four colors so no adjacent regions share a hue.",
+      "Four - DNA nucleobases. Adenine, cytosine, guanine, and thymine write the code of all life.",
+      "Four - The fourth dimension. In relativistic physics, time joins the three dimensions of space.",
+      "Four - IPv4 architecture. The classic protocol that mapped the first iteration of the global internet."
     ],
     5: [
-      "Five: The golden ratio. The number 5 is the key to constructing the golden spiral.",
-      "Human senses. Five channels connecting our consciousness to reality.",
-      "Platonic solids. There are exactly five regular three-dimensional shapes.",
-      "Fibonacci term. Five is the fifth number in the Fibonacci sequence.",
-      "Pentagon. The five-sided polygon representing ultimate security."
+      "Five - The golden ratio. The number 5 is intimately tied to phi, the mathematical fingerprint of beauty.",
+      "Five - Platonic solids. The universe allows for exactly five regular three-dimensional shapes.",
+      "Five - High five for Apollo. The F-1 engine cluster on the Saturn V rocket that took humanity to the moon.",
+      "Five - The pentagram. A five-pointed star drawn with five straight strokes, steeped in ancient mysticism.",
+      "Five - Boron's atomic number. The cosmic element created entirely by cosmic ray spallation, not stellar nucleosynthesis."
     ],
     6: [
-      "Six: A perfect number. The sum of its proper divisors (1 + 2 + 3) equals 6.",
-      "Hexagonal honeycombs. Nature's most space-efficient tile configuration.",
-      "Carbon chemistry. The six-carbon benzene ring is the basis of organic life.",
-      "Six degrees of separation. Any two people are connected by at most six steps.",
-      "Standard dice. A cubic die has six faces, each representing a path of chance."
+      "Six - Six degrees of separation. Any two people are connected by at most six steps.",
+      "Six - Standard dice. A cubic die has six faces, each representing a path of chance.",
+      "Six - A perfect number. The sum of its divisors (1, 2, and 3) equals the number itself.",
+      "Six - Carbon chemistry. The element of life, with six protons binding the organic universe together.",
+      "Six - Hexagonal honeycombs. Nature's most mathematically space-efficient tile configuration."
     ],
     7: [
-      "Seven: The OSI model. A network stack built on seven layers of abstraction.",
-      "Lucky seven. A symbol of fortune and completion across many cultures.",
-      "Rainbow spectrum. Light refracting into seven distinct colors.",
-      "Classic keyboard row. The number of keys separating basic shift ciphers.",
-      "Seven stars of the Big Dipper. Navigating the night sky since antiquity."
+      "Seven - Lucky seven. A symbol of fortune and completion across many cultures.",
+      "Seven - The OSI model. A conceptual framework dividing network communication into seven distinct layers.",
+      "Seven - Millennium Prize Problems. The seven greatest unsolved puzzles in mathematics, each worth a million dollars.",
+      "Seven - The limit of short-term memory. The human brain can typically hold seven items in its working memory.",
+      "Seven - Rainbow spectrum. Isaac Newton divided the visible spectrum into seven distinct colors."
     ],
     8: [
-      "Eight the Perfect Cube. Eight is the only Fibonacci number (other than 1) that is a perfect cube (2³ = 8).",
-      "Eight the Byte. Eight bits form a single byte of digital information.",
-      "Solar Planets. There are exactly eight planets orbiting our sun.",
-      "Chessboard grid. The battlefield of chess is an 8 by 8 grid of squares.",
-      "Octopus arms. True to its Greek prefix, an octopus commands eight limbs."
+      "Eight - Chessboard grid. The battlefield of chess is an 8 by 8 grid of squares.",
+      "Eight - The Byte. Eight bits form a single byte, the fundamental unit of digital storage.",
+      "Eight - A perfect cube. The only Fibonacci number, other than one, that is a perfect cube.",
+      "Eight - Infinity upright. Rotate the symbol for infinity ninety degrees, and you get the number eight.",
+      "Eight - The octet rule. In chemistry, atoms are most stable when their valence shell holds eight electrons."
     ],
     9: [
-      "Nine: Almost double digits. The largest single-digit number in base-10.",
-      "Sudoku grid. Nine squares of nine cells make up the logic puzzle.",
-      "Planet Pluto. Historically counted as the ninth planet of our solar system.",
-      "Enneagram system. A framework mapping nine distinct human personality types.",
-      "Nonagon geometry. A nine-sided polygon represents structural complexity."
+      "Nine - The magic nine. Any number multiplied by nine will have digits that sum back to nine.",
+      "Nine - Cloud nine. The highest level of a towering cumulonimbus cloud, now synonymous with euphoria.",
+      "Nine - Sudoku logic. A grid of nine by nine cells that requires pure deduction, not math, to solve.",
+      "Nine - The Enneagram. A geometric figure mapping nine distinct nodes of human personality types.",
+      "Nine - Almost double digits. The largest single-digit number in the base-10 counting system."
     ],
     10: [
-      "Ten: Decimal base. Our counting system is base-10, inspired by our ten fingers.",
-      "Metric multiplier. The metric system measures the physical world in powers of ten.",
-      "Decibel scale. An increase of 10 decibels is a tenfold increase in intensity.",
-      "Ten-code communications. Used by emergency services for quick messages.",
-      "Binary value of two. In binary representation, '10' represents the decimal number two."
+      "Ten - Decimal base. Our counting system is base-10, inspired by our ten fingers.",
+      "Ten - Metric multiplier. The international system of units measures the physical world in neat powers of ten.",
+      "Ten - Tetractys. A triangular figure of ten points, revered by the Pythagoreans as a mystical symbol.",
+      "Ten - Decibel scale. A logarithmic unit where an increase of ten represents a tenfold increase in acoustic energy.",
+      "Ten - Binary translation. In the language of computers, the decimal number two is written simply as '10'."
     ],
     11: [
-      "Eleven: The first palindrome. The smallest double-digit palindromic prime.",
-      "OS computer systems. Windows 11 brings modern design to the desktop.",
-      "Solar cycle. Solar activity peaks and troughs every eleven years.",
-      "Hendecagon geometry. An eleven-sided polygon is a hendecagon.",
-      "Deep space probe. Apollo 11 was the historic flight that put humans on the Moon."
+      "Eleven - The first palindrome. The smallest double-digit palindromic prime number.",
+      "Eleven - M-theory dimensions. Advanced string theory suggests the universe operates in exactly eleven dimensions.",
+      "Eleven - Apollo 11. The historic spaceflight that put the first humans on the lunar surface.",
+      "Eleven - Solar cycle. The sun's magnetic field completely flips its polarity every eleven years.",
+      "Eleven - The hendecagon. A complex polygon boasting exactly eleven sides and eleven angles."
     ],
     12: [
-      "Twelve: The Dozen. A highly composite number, easily divided into halves, thirds, and quarters.",
-      "Lunar cycle. The year is divided into twelve months, matching the lunar phases.",
-      "Duodecimal base. Base-12 is often praised as a more natural mathematical base than 10.",
-      "Zodiac signs. Twelve constellations guiding celestial navigation.",
-      "Tensegrity. A structure of twelve struts held in perfect tension."
+      "Twelve - Highly composite. A mathematically elegant number cleanly divisible by one, two, three, four, and six.",
+      "Twelve - Duodecimal base. Base-12 mathematics is heavily advocated for its superior divisibility over base-10.",
+      "Twelve - The chromatic scale. Western music divides an octave into exactly twelve distinct semitones.",
+      "Twelve - Tensegrity. A synergetic structure requiring a minimum of twelve struts to maintain perfect tension.",
+      "Twelve - Synodic months. The approximate number of lunar cycles it takes to complete one solar year."
     ],
     13: [
-      "Thirteen: Baker's dozen. Bakers traditionally added a thirteenth loaf for good measure.",
-      "Folk superstition. Often considered unlucky, though mathematically a strong prime.",
-      "Fibonacci number. Thirteen is the seventh number in the Fibonacci sequence.",
-      "USA foundation. Thirteen original colonies declared independence in 1776.",
-      "Lunar calendar. Some traditional calendars track thirteen lunar cycles per year."
+      "Thirteen - Baker's dozen. A historical practice where bakers added a thirteenth loaf to avoid fines for shortchanging.",
+      "Thirteen - Archimedean solids. There are exactly thirteen highly symmetric, semi-regular convex polyhedra.",
+      "Thirteen - Prime superstition. Mathematically robust but culturally feared, triskaidekaphobia is the fear of this prime number.",
+      "Thirteen - Fibonacci sequence. The seventh number in nature's favorite mathematical sequence.",
+      "Thirteen - Aluminum's atomic number. The most abundant metal in the Earth's crust is element 13."
     ],
     14: [
-      "Fourteen: Carbon dating. Carbon-14 isotopes help trace the age of ancient organic matter.",
-      "Sonnets. A classic Shakespearean sonnet contains exactly fourteen lines.",
-      "Fortnight. A measurement of time spanning exactly fourteen days.",
-      "Silicon atomic number. Silicon, the backbone of modern computing chips, is element 14.",
-      "Phases of the moon. It takes fourteen days to transition from a new moon to a full moon."
+      "Fourteen - Carbon dating. Carbon-14 isotopes act as a radioactive clock to trace the age of ancient organic matter.",
+      "Fourteen - Silicon's signature. Element 14 is the semiconductor backbone of every modern computing chip.",
+      "Fourteen - Sonnet structure. A classic Shakespearean poem is rigidly locked to exactly fourteen lines.",
+      "Fourteen - The cuboctahedron. A polyhedral shape composed of exactly fourteen faces: eight triangular and six square.",
+      "Fourteen - Fortnight. A linguistic measurement of time spanning exactly fourteen nights."
     ],
     15: [
-      "Fifteen: Magic square. A 3x3 grid where every row, column, and diagonal sums to 15.",
-      "Phosphorus atomic number. The highly reactive element 15 is vital for cellular energy.",
-      "Quindecagon. A polygon with fifteen sides and fifteen interior angles.",
-      "Binary max value. 15 is the maximum decimal value of a 4-bit nibble (1111 in binary).",
-      "Standard game. A classic fifteen puzzle challenges players to slide tiles in a grid."
+      "Fifteen - Magic square. A 3x3 mathematical grid where every row, column, and diagonal seamlessly sums to 15.",
+      "Fifteen - Phosphorus. Element 15 is highly reactive and absolutely vital for biological cellular energy.",
+      "Fifteen - Binary maximum. The absolute maximum decimal value that can be squeezed into a 4-bit nibble (1111).",
+      "Fifteen - The 15 Puzzle. A classic sliding grid game that revolutionized mechanical logic puzzles.",
+      "Fifteen - Quarter hour. A 15-minute chunk, making it a highly composite wedge of the 60-minute clock."
     ]
   };
 
