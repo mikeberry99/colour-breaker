@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/design_tokens.dart';
@@ -40,14 +42,22 @@ class _SeedEntryDialogState extends ConsumerState<SeedEntryDialog> {
     ref.read(sessionSeedProvider.notifier).setSeed(decoded);
     ref.read(selectedProtocolProvider.notifier).setProtocol(decoded.protocol);
     
+    final router = GoRouter.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    
     Navigator.of(context).pop();
     
-    ScaffoldMessenger.of(context).showSnackBar(
+    scaffoldMessenger.showSnackBar(
       SnackBar(
-        content: Text('Seed loaded. Level set to ${decoded.protocol.name}.'),
+        content: Text(
+          'Seed loaded. Level set to ${decoded.protocol.name}.',
+          style: const TextStyle(color: Colors.white),
+        ),
         backgroundColor: DesignTokens.surfaceContainerHighest,
       ),
     );
+
+    router.go('/game');
   }
 
   @override
@@ -80,8 +90,10 @@ class _SeedEntryDialogState extends ConsumerState<SeedEntryDialog> {
           const SizedBox(height: 16),
           TextField(
             controller: _controller,
-            maxLength: 5,
             textCapitalization: TextCapitalization.characters,
+            inputFormatters: [
+              SeedPasteFormatter(),
+            ],
             style: GoogleFonts.jetBrainsMono(
               color: DesignTokens.primaryNeonCyan,
               fontSize: 24,
@@ -149,6 +161,62 @@ class _SeedEntryDialogState extends ConsumerState<SeedEntryDialog> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class SeedPasteFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text;
+    
+    // Check if the input contains a share message pattern.
+    // The pattern is: "Seed: <5 letters>"
+    final seedRegex = RegExp(r'[Ss]eed:\s*([A-Za-z]{5})\b');
+    final match = seedRegex.firstMatch(text);
+    if (match != null) {
+      final extracted = match.group(1)!.toUpperCase();
+      return TextEditingValue(
+        text: extracted,
+        selection: TextSelection.collapsed(offset: extracted.length),
+      );
+    }
+    
+    // Check fallback for any 5-letter word that decodes as a valid seed,
+    // if the text contains keywords of the share message.
+    if (text.contains('I cracked') || text.contains('Code Hacker') || text.contains('tough this time')) {
+      final words = text.split(RegExp(r'[\s!,.\?]+'));
+      for (final word in words) {
+        if (word.length == 5) {
+          final uppercaseWord = word.toUpperCase();
+          if (GameSeed.decode(uppercaseWord) != null) {
+            return TextEditingValue(
+              text: uppercaseWord,
+              selection: TextSelection.collapsed(offset: uppercaseWord.length),
+            );
+          }
+        }
+      }
+    }
+    
+    // Otherwise, limit the text to 5 characters and convert to uppercase.
+    String uppercaseText = text.toUpperCase();
+    if (uppercaseText.length > 5) {
+      uppercaseText = uppercaseText.substring(0, 5);
+    }
+    
+    // Adjust cursor position if it exceeds the new length
+    int selectionOffset = newValue.selection.end;
+    if (selectionOffset < 0 || selectionOffset > uppercaseText.length) {
+      selectionOffset = uppercaseText.length;
+    }
+    
+    return TextEditingValue(
+      text: uppercaseText,
+      selection: TextSelection.collapsed(offset: selectionOffset),
     );
   }
 }

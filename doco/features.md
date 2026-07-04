@@ -36,3 +36,5 @@ Example 8
  Culture & Symbolism
  Prosperity: In Chinese culture, the number 8 is deeply associated with wealth and good fortune because the word for eight (bā) sounds like the word for "prosper" (fā).
  Music: A diatonic musical scale spans 8 notes, which is known as an octave
+
+ I cracked the Code Hacker sequence in 7 attempts! Seed: ANEAR. Can you beat my score?

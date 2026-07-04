@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../../../core/theme/design_tokens.dart';
 import '../providers/level_selection_provider.dart';
 import '../widgets/level_option_card.dart';
 import '../widgets/seed_entry_dialog.dart';
+import '../widgets/help_dialog.dart';
 
 class LevelSelectionScreen extends ConsumerWidget {
   const LevelSelectionScreen({super.key});
@@ -165,7 +168,6 @@ class LevelSelectionScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
                   Row(
                     children: [
                       IconButton(
@@ -183,12 +185,9 @@ class LevelSelectionScreen extends ConsumerWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          // Standard help dialog / toast placeholder
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Help protocol initialized. Select security level.'),
-                              backgroundColor: DesignTokens.surfaceContainerHighest,
-                            ),
+                          showDialog(
+                            context: context,
+                            builder: (context) => const HelpDialog(),
                           );
                         },
                         icon: const Icon(
@@ -196,22 +195,6 @@ class LevelSelectionScreen extends ConsumerWidget {
                           color: DesignTokens.onSurfaceVariant,
                         ),
                         tooltip: 'Help',
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          // Standard settings dialog / toast placeholder
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Settings protocol initialized.'),
-                              backgroundColor: DesignTokens.surfaceContainerHighest,
-                            ),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.settings_outlined,
-                          color: DesignTokens.onSurfaceVariant,
-                        ),
-                        tooltip: 'Settings',
                       ),
                     ],
                   ),
@@ -245,10 +228,36 @@ class LevelSelectionScreen extends ConsumerWidget {
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-              child: _EstablishConnectionButton(
-                onPressed: () {
-                  context.go('/game');
-                },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _EstablishConnectionButton(
+                    onPressed: () {
+                      context.go('/game');
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  InkWell(
+                    onTap: () async {
+                      final url = Uri.parse('https://mikeberry.dev/');
+                      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                        debugPrint('Could not launch $url');
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusDefault),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        'created by mikeberry.dev',
+                        style: GoogleFonts.jetBrainsMono(
+                          color: DesignTokens.onSurfaceVariant,
+                          fontSize: 12,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
