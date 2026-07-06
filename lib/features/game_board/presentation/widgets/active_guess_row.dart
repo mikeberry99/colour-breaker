@@ -34,7 +34,7 @@ class ActiveGuessRow extends ConsumerWidget {
                 onTap: hasColor && isPlaying
                     ? () {
                         // tap a filled slot to remove it (remove from index onwards)
-                        ref.read(gameStateProvider.notifier).removeColor();
+                        ref.read(gameStateProvider.notifier).removeColorAt(index);
                       }
                     : null,
                 child: TweenAnimationBuilder<Color?>(

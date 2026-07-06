@@ -60,10 +60,10 @@ class GameStateNotifier extends Notifier<GameState> {
     }
   }
 
-  void removeColor() {
+  void removeColorAt(int index) {
     if (state.status != GameStatus.playing) return;
-    if (state.activeGuess.colors.isNotEmpty) {
-      final newColors = List<GameColor>.from(state.activeGuess.colors)..removeLast();
+    if (index >= 0 && index < state.activeGuess.colors.length) {
+      final newColors = state.activeGuess.colors.sublist(0, index);
       state = state.copyWith(activeGuess: Guess(colors: newColors));
     }
   }

@@ -197,6 +197,28 @@ void main() {
       expect(state.maxAttempts, 11);
       expect(state.status, GameStatus.playing);
     });
+
+    test('removeColorAt clears guess from specified index onwards', () {
+      final notifier = container.read(gameStateProvider.notifier);
+
+      // Add 3 colors
+      notifier.addColor(GameColor.red);
+      notifier.addColor(GameColor.blue);
+      notifier.addColor(GameColor.green);
+
+      var activeColors = container.read(gameStateProvider).activeGuess.colors;
+      expect(activeColors.length, 3);
+      expect(activeColors[0], GameColor.red);
+      expect(activeColors[1], GameColor.blue);
+      expect(activeColors[2], GameColor.green);
+
+      // Remove from index 1 (removes index 1 and 2, keeping only index 0)
+      notifier.removeColorAt(1);
+
+      activeColors = container.read(gameStateProvider).activeGuess.colors;
+      expect(activeColors.length, 1);
+      expect(activeColors[0], GameColor.red);
+    });
   });
 
   group('NumberQuotes and SelectedQuote tests', () {

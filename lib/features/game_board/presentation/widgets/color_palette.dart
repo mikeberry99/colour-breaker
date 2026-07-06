@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/ui/neon_orb.dart';
 import '../../domain/entities/game_color.dart';
+import '../../domain/entities/game_state.dart';
 import '../providers/game_provider.dart';
 
 class ColorPalette extends ConsumerWidget {
@@ -10,6 +11,10 @@ class ColorPalette extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final gameState = ref.watch(gameStateProvider);
+    final isEnabled = gameState.status == GameStatus.playing &&
+        gameState.activeGuess.colors.length < gameState.slotCount;
+
     final validColors =
         GameColor.values.where((c) => c != GameColor.empty).toList();
 
@@ -32,11 +37,15 @@ class ColorPalette extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 2.5),
             child: Semantics(
               label: '${color.name} colour',
-              button: true,
+              button: isEnabled,
               child: GestureDetector(
-                onTap: () =>
-                    ref.read(gameStateProvider.notifier).addColor(color),
-                child: _PaletteOrb(color: color),
+                onTap: isEnabled
+                    ? () => ref.read(gameStateProvider.notifier).addColor(color)
+                    : null,
+                child: _PaletteOrb(
+                  color: color,
+                  isEnabled: isEnabled,
+                ),
               ),
             ),
           );
@@ -48,8 +57,12 @@ class ColorPalette extends ConsumerWidget {
 
 class _PaletteOrb extends StatefulWidget {
   final GameColor color;
+  final bool isEnabled;
 
-  const _PaletteOrb({required this.color});
+  const _PaletteOrb({
+    required this.color,
+    required this.isEnabled,
+  });
 
   @override
   State<_PaletteOrb> createState() => _PaletteOrbState();
@@ -60,34 +73,47 @@ class _PaletteOrbState extends State<_PaletteOrb> {
 
   @override
   Widget build(BuildContext context) {
+    final showHover = widget.isEnabled && _isHovered;
+    final cursor = widget.isEnabled ? SystemMouseCursors.click : SystemMouseCursors.basic;
+
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: _isHovered
-                ? DesignTokens.primaryNeonCyan
-                : Colors.transparent,
-            width: 1.5,
+      cursor: cursor,
+      onEnter: (_) {
+        if (widget.isEnabled) {
+          setState(() => _isHovered = true);
+        }
+      },
+      onExit: (_) {
+        setState(() => _isHovered = false);
+      },
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: widget.isEnabled ? 1.0 : 0.4,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: showHover
+                  ? DesignTokens.primaryNeonCyan
+                  : Colors.transparent,
+              width: 1.5,
+            ),
+            boxShadow: showHover
+                ? [
+                    BoxShadow(
+                      color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
+                      blurRadius: 6,
+                      spreadRadius: 1,
+                    ),
+                  ]
+                : null,
           ),
-          boxShadow: _isHovered
-              ? [
-                  BoxShadow(
-                     color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
-                    blurRadius: 6,
-                    spreadRadius: 1,
-                  ),
-                ]
-              : null,
-        ),
-        child: NeonOrb(
-          gameColor: widget.color,
-          size: 38,
+          child: NeonOrb(
+            gameColor: widget.color,
+            size: 38,
+          ),
         ),
       ),
     );
