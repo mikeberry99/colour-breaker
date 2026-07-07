@@ -7,6 +7,12 @@ external void _trackGameMode(JSString mode);
 @JS('trackPageVisit')
 external void _trackPageVisit(JSString pageName);
 
+@JS('trackGameWon')
+external void _trackGameWon(JSString mode, JSNumber attempts);
+
+@JS('trackGameLost')
+external void _trackGameLost(JSString mode, JSNumber attempts);
+
 class AnalyticsHelperImpl implements AnalyticsHelper {
   @override
   void trackGameStart(String mode) {
@@ -21,6 +27,24 @@ class AnalyticsHelperImpl implements AnalyticsHelper {
   void trackPageVisit(String pageName) {
     try {
       _trackPageVisit(pageName.toJS);
+    } catch (e) {
+      // Prevent crash if JS function is not defined
+    }
+  }
+
+  @override
+  void trackGameWon(String mode, int attempts) {
+    try {
+      _trackGameWon(mode.toJS, attempts.toJS);
+    } catch (e) {
+      // Prevent crash if JS function is not defined
+    }
+  }
+
+  @override
+  void trackGameLost(String mode, int attempts) {
+    try {
+      _trackGameLost(mode.toJS, attempts.toJS);
     } catch (e) {
       // Prevent crash if JS function is not defined
     }

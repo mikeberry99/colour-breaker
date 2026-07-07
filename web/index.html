@@ -64,6 +64,22 @@
           'page_name': pageName
         });
       };
+
+      // JS helper function to track successfully solved games
+      window.trackGameWon = function(modeName, attempts) {
+        gtag('event', 'game_won', {
+          'game_mode': modeName,
+          'attempts': attempts
+        });
+      };
+
+      // JS helper function to track failed games (exceeded attempts)
+      window.trackGameLost = function(modeName, attempts) {
+        gtag('event', 'game_lost', {
+          'game_mode': modeName,
+          'attempts': attempts
+        });
+      };
     } else {
       // Fallback stubs for development or if analytics is disabled
       const ENABLE_DEBUG_LOGS = false;
@@ -72,6 +88,12 @@
       };
       window.trackPageVisit = function(pageName) {
         if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Page visit: ' + pageName);
+      };
+      window.trackGameWon = function(modeName, attempts) {
+        if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Game won: ' + modeName + ' in ' + attempts + ' attempts');
+      };
+      window.trackGameLost = function(modeName, attempts) {
+        if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Game lost: ' + modeName + ' after ' + attempts + ' attempts');
       };
     }
   </script>

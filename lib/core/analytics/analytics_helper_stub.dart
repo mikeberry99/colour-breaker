@@ -6,6 +6,12 @@ class AnalyticsHelperImpl implements AnalyticsHelper {
 
   @override
   void trackPageVisit(String pageName) {}
+
+  @override
+  void trackGameWon(String mode, int attempts) {}
+
+  @override
+  void trackGameLost(String mode, int attempts) {}
 }
 
 AnalyticsHelper getAnalyticsHelper() => AnalyticsHelperImpl();

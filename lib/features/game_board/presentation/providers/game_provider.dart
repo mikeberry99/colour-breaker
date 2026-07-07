@@ -98,6 +98,12 @@ class GameStateNotifier extends Notifier<GameState> {
       }
     }
 
+    if (newStatus == GameStatus.won) {
+      AnalyticsHelper.instance.trackGameWon(state.protocol.name, newHistory.length);
+    } else if (newStatus == GameStatus.lost) {
+      AnalyticsHelper.instance.trackGameLost(state.protocol.name, newHistory.length);
+    }
+
     state = state.copyWith(
       history: newHistory,
       feedbacks: newFeedbacks,
