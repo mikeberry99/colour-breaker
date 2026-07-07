@@ -66,11 +66,12 @@
       };
     } else {
       // Fallback stubs for development or if analytics is disabled
+      const ENABLE_DEBUG_LOGS = false;
       window.trackGameMode = function(modeName) {
-        console.log('[Analytics Mock] Game start: ' + modeName);
+        if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Game start: ' + modeName);
       };
       window.trackPageVisit = function(pageName) {
-        console.log('[Analytics Mock] Page visit: ' + pageName);
+        if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Page visit: ' + pageName);
       };
     }
   </script>
