@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/analytics/analytics_helper.dart';
 import '../../domain/entities/game_color.dart';
 import '../../domain/entities/guess.dart';
 import '../../domain/entities/game_state.dart';
@@ -25,6 +26,9 @@ class GameStateNotifier extends Notifier<GameState> {
       _generateSolution(protocol);
     }
     
+    // Track game start
+    AnalyticsHelper.instance.trackGameStart(protocol.name);
+
     return GameState(
       protocol: protocol,
       maxAttempts: 10,
@@ -108,6 +112,7 @@ class GameStateNotifier extends Notifier<GameState> {
     final protocol = ref.read(selectedProtocolProvider);
     ref.read(sessionSeedProvider.notifier).setSeed(null);
     _generateSolution(protocol);
+    AnalyticsHelper.instance.trackGameStart(protocol.name);
     state = GameState(
       gameId: state.gameId + 1,
       protocol: protocol,
@@ -118,6 +123,7 @@ class GameStateNotifier extends Notifier<GameState> {
   void restartLevel() {
     ref.read(sessionSeedProvider.notifier).setSeed(null);
     _generateSolution(state.protocol);
+    AnalyticsHelper.instance.trackGameStart(state.protocol.name);
     state = GameState(
       gameId: state.gameId + 1,
       protocol: state.protocol,

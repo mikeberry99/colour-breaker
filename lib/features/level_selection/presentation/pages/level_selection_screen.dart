@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/analytics/analytics_helper.dart';
 import '../providers/level_selection_provider.dart';
 import '../widgets/level_option_card.dart';
 import '../widgets/seed_entry_dialog.dart';
@@ -18,6 +19,10 @@ class LevelSelectionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedProtocol = ref.watch(selectedProtocolProvider);
     final theme = Theme.of(context);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AnalyticsHelper.instance.trackPageVisit('level_selection');
+    });
 
     return Scaffold(
       backgroundColor: DesignTokens.background,

@@ -32,6 +32,48 @@
   <title>colour_breaker</title>
   <link rel="manifest" href="manifest.json">
 
+  <!-- Google Analytics Tracking -->
+  <script>
+    // --- GOOGLE ANALYTICS CONFIGURATION ---
+    // Change this ID if your Measurement ID changes.
+    const GA_MEASUREMENT_ID = 'G-4CDGWW0KWD';
+    // --------------------------------------
+
+    if (GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
+      // Dynamically load the Google Tag script
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', GA_MEASUREMENT_ID);
+
+      // JS helper function called from Flutter Dart to track game mode select
+      window.trackGameMode = function(modeName) {
+        gtag('event', 'game_start', {
+          'game_mode': modeName
+        });
+      };
+
+      // JS helper function called from Flutter Dart to track page visits
+      window.trackPageVisit = function(pageName) {
+        gtag('event', 'page_visit', {
+          'page_name': pageName
+        });
+      };
+    } else {
+      // Fallback stubs for development or if analytics is disabled
+      window.trackGameMode = function(modeName) {
+        console.log('[Analytics Mock] Game start: ' + modeName);
+      };
+      window.trackPageVisit = function(pageName) {
+        console.log('[Analytics Mock] Page visit: ' + pageName);
+      };
+    }
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
