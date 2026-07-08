@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/utils/platform_utils.dart';
 import '../widgets/header_widget.dart';
 import '../widgets/history_log.dart';
 import '../widgets/active_guess_row.dart';
@@ -36,8 +37,29 @@ final overlayDismissedProvider =
   OverlayDismissedNotifier.new,
 );
 
-class GameBoardScreen extends ConsumerWidget {
+class GameBoardScreen extends ConsumerStatefulWidget {
   const GameBoardScreen({super.key});
+
+  @override
+  ConsumerState<GameBoardScreen> createState() => _GameBoardScreenState();
+}
+
+class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
+  final GlobalKey _activeRowKey = GlobalKey();
+  final GlobalKey _scrollViewKey = GlobalKey();
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Widget _buildAppBar(BuildContext context) {
     return ClipRect(
@@ -109,11 +131,41 @@ class GameBoardScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    ref.listen<RevealAnimationState>(revealAnimationProvider, (previous, next) {
+      if (previous?.isAnimating == true && next.isAnimating == false) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final ctx = _activeRowKey.currentContext;
+          final scrollCtx = _scrollViewKey.currentContext;
+          if (ctx != null && ctx.mounted && scrollCtx != null && scrollCtx.mounted) {
+            final RenderBox? renderBox = ctx.findRenderObject() as RenderBox?;
+            final RenderBox? scrollRenderBox = scrollCtx.findRenderObject() as RenderBox?;
+            if (renderBox != null && scrollRenderBox != null && _scrollController.hasClients) {
+              final Offset position = renderBox.localToGlobal(Offset.zero, ancestor: scrollRenderBox);
+              final double widgetTop = position.dy;
+              final double widgetBottom = widgetTop + renderBox.size.height;
+              final double viewportHeight = _scrollController.position.viewportDimension;
+
+              final bool isVisible = widgetTop >= 0 && widgetBottom <= viewportHeight;
+              if (!isVisible) {
+                _scrollController.position.ensureVisible(
+                  renderBox,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              }
+            }
+          }
+        });
+      }
+    });
+
     final gameState = ref.watch(gameStateProvider);
     final animation = ref.watch(revealAnimationProvider);
     final isGameOver = gameState.status != GameStatus.playing && !animation.isAnimating;
     final isDismissed = ref.watch(overlayDismissedProvider);
+
+    final isMobile = isMobileBrowser;
 
     return Scaffold(
       backgroundColor: DesignTokens.background,
@@ -139,19 +191,33 @@ class GameBoardScreen extends ConsumerWidget {
               heightFactor: 1.0,
               child: Container(
                 constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                child: const Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ActiveGuessRow(),
-                    SizedBox(height: 8),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ColorPalette(),
-                        SizedBox(width: 12),
-                        Expanded(child: SubmitButton()),
-                      ],
-                    ),
+                    if (isMobile) ...[
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ActiveGuessRow(),
+                          SizedBox(width: 8),
+                          SubmitButton(),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      const Center(child: ColorPalette()),
+                    ] else ...[
+                      const ActiveGuessRow(),
+                      const SizedBox(height: 8),
+                      const Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ColorPalette(),
+                          SizedBox(width: 12),
+                          Expanded(child: SubmitButton()),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -169,17 +235,20 @@ class GameBoardScreen extends ConsumerWidget {
                   child: Center(
                     child: Container(
                       constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                      child: const Column(
+                      child: Column(
                         children: [
-                          HeaderWidget(),
-                          SizedBox(height: 12),
+                          const HeaderWidget(),
+                          const SizedBox(height: 12),
                           Expanded(
                             child: SingleChildScrollView(
-                              padding: EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
+                              key: _scrollViewKey,
+                              controller: _scrollController,
+                              reverse: true,
+                              padding: const EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
                               child: Column(
                                 children: [
-                                  HistoryLog(),
-                                  SizedBox(height: 24),
+                                  HistoryLog(activeRowKey: _activeRowKey),
+                                  const SizedBox(height: 24),
                                 ],
                               ),
                             ),

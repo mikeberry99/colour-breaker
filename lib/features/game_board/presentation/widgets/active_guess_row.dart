@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/ui/neon_orb.dart';
 import '../../../../core/ui/dashed_circle.dart';
+import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/game_color.dart';
 import '../../domain/entities/game_state.dart';
 import '../providers/game_provider.dart';
@@ -15,16 +16,18 @@ class ActiveGuessRow extends ConsumerWidget {
     final gameState = ref.watch(gameStateProvider);
     final activeGuess = gameState.activeGuess;
     final isPlaying = gameState.status == GameStatus.playing;
+    final isMobile = isMobileBrowser;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // Slots with dashed cyan ring, matching Stitch design
         ...List.generate(gameState.slotCount, (index) {
           final hasColor = index < activeGuess.colors.length;
           final color = hasColor ? activeGuess.colors[index] : GameColor.empty;
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
+            padding: EdgeInsets.symmetric(horizontal: isMobile ? 4.0 : 6.0),
             child: Semantics(
               label: hasColor
                   ? 'Slot ${index + 1}: ${activeGuess.colors[index].name}'

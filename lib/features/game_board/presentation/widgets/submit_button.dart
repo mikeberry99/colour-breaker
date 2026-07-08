@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/game_state.dart';
 import '../providers/game_provider.dart';
 import '../providers/reveal_animation_provider.dart';
@@ -22,6 +23,8 @@ class _SubmitButtonState extends ConsumerState<SubmitButton> {
         gameState.status == GameStatus.playing;
 
     final cursor = canSubmit ? SystemMouseCursors.click : SystemMouseCursors.basic;
+
+    final isMobile = isMobileBrowser;
 
     return MouseRegion(
       cursor: cursor,
@@ -70,7 +73,7 @@ class _SubmitButtonState extends ConsumerState<SubmitButton> {
                 : null,
           ),
           child: Text(
-            'LOAD HACK',
+            isMobile ? 'LOAD' : 'LOAD HACK',
             textAlign: TextAlign.center,
             maxLines: 1,
             softWrap: false,

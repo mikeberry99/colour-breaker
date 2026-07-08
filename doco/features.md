@@ -1,5 +1,14 @@
 ## Features to add
+- work on the mobile interface
+  - Fix the submit button
+  - scroll down to start row
+  - Shrink the success overlay slightly, play again not visible on mobile.
+  - Limited white space around feedback for 5 colors
+- Fix the game name. Can this be more interesting?
+- Change the page titles for the two pages
+- Check analytics is working okay.
 
+## DONE
 - Add the ability to input a seed to play the same colours as an other player
 - After getting a succesful hack have a victory screen with number of guesses required, level and seed for playing
 - Allow for multiple levels

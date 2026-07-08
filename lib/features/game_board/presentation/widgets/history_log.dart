@@ -10,7 +10,12 @@ import '../providers/reveal_animation_provider.dart';
 import 'feedback_pegs_widget.dart';
 
 class HistoryLog extends ConsumerWidget {
-  const HistoryLog({super.key});
+  final Key? activeRowKey;
+
+  const HistoryLog({
+    super.key,
+    this.activeRowKey,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,10 +47,17 @@ class HistoryLog extends ConsumerWidget {
             protocol: gameState.protocol,
           );
         } else {
-          final isActive = index == history.length &&
+          final isNextEmptyRow = index == history.length;
+          final isActive = isNextEmptyRow &&
               gameState.status == GameStatus.playing &&
               !animation.isAnimating;
-          final emptyRow = _buildEmptyRow(context, gameState, index, isActive);
+          final emptyRow = _buildEmptyRow(
+            context,
+            gameState,
+            index,
+            isActive,
+            key: isNextEmptyRow ? activeRowKey : null,
+          );
           if (index >= 10) {
             return _AnimatedEmptyRow(child: emptyRow);
           } else {
@@ -151,9 +163,16 @@ class HistoryLog extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyRow(BuildContext context, GameState gameState, int index, bool isActive) {
+  Widget _buildEmptyRow(
+    BuildContext context,
+    GameState gameState,
+    int index,
+    bool isActive, {
+    Key? key,
+  }) {
     final formattedIndex = index.toString().padLeft(2, '0');
     return Padding(
+      key: key,
       padding: const EdgeInsets.only(bottom: DesignTokens.rowGap),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
