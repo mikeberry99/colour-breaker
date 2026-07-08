@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/ui/neon_orb.dart';
+import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/game_color.dart';
 import '../../domain/entities/game_state.dart';
 import '../../domain/entities/security_protocol.dart';
@@ -80,13 +81,14 @@ class HistoryLog extends ConsumerWidget {
     bool isActive = false,
   }) {
     final formattedIndex = index.toString().padLeft(2, '0');
+    final isMobile = isMobileBrowser;
     return Padding(
       padding: const EdgeInsets.only(bottom: DesignTokens.rowGap),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 32,
+            width: isMobile ? 24 : 32,
             child: Text(
               formattedIndex,
               style: const TextStyle(
@@ -97,7 +99,7 @@ class HistoryLog extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: isMobile ? 6 : 12),
           Expanded(
             child: Container(
               clipBehavior: Clip.antiAlias,
@@ -123,28 +125,32 @@ class HistoryLog extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(4, 5, 4, 5),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: colors.asMap().entries.map((entry) {
-                            final colorIndex = entry.key;
-                            final color = entry.value;
-                            final revealed = colorIndex < revealedColors;
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                left: DesignTokens.unit,
-                                right: DesignTokens.unit,
-                              ),
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 250),
-                                child: NeonOrb(
-                                  key: ValueKey(revealed ? color : GameColor.empty),
-                                  size: 32,
-                                  gameColor: revealed ? color : GameColor.empty,
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                        Expanded(
+                          child: Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: colors.asMap().entries.map((entry) {
+                                final colorIndex = entry.key;
+                                final color = entry.value;
+                                final revealed = colorIndex < revealedColors;
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    left: isMobile ? 4.0 : DesignTokens.unit,
+                                    right: isMobile ? 4.0 : DesignTokens.unit,
+                                  ),
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 250),
+                                    child: NeonOrb(
+                                      key: ValueKey(revealed ? color : GameColor.empty),
+                                      size: 32,
+                                      gameColor: revealed ? color : GameColor.empty,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
                         AnimatedOpacity(
                           duration: const Duration(milliseconds: 250),
@@ -171,6 +177,7 @@ class HistoryLog extends ConsumerWidget {
     Key? key,
   }) {
     final formattedIndex = index.toString().padLeft(2, '0');
+    final isMobile = isMobileBrowser;
     return Padding(
       key: key,
       padding: const EdgeInsets.only(bottom: DesignTokens.rowGap),
@@ -178,7 +185,7 @@ class HistoryLog extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 32,
+            width: isMobile ? 24 : 32,
             child: Text(
               formattedIndex,
               style: TextStyle(
@@ -189,7 +196,7 @@ class HistoryLog extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: isMobile ? 6 : 12),
           Expanded(
             child: Container(
               clipBehavior: Clip.antiAlias,
@@ -211,18 +218,22 @@ class HistoryLog extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(4, 5, 4, 5),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: List.generate(gameState.slotCount, (_) {
-                            return const Padding(
-                              padding: EdgeInsets.only(
-                                left: DesignTokens.unit,
-                                right: DesignTokens.unit,
-                              ),
-                              child: NeonOrb(size: 32, gameColor: GameColor.empty),
-                            );
-                          }),
+                        Expanded(
+                          child: Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: List.generate(gameState.slotCount, (_) {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    left: isMobile ? 4.0 : DesignTokens.unit,
+                                    right: isMobile ? 4.0 : DesignTokens.unit,
+                                  ),
+                                  child: const NeonOrb(size: 32, gameColor: GameColor.empty),
+                                );
+                              }),
+                            ),
+                          ),
                         ),
                         _buildFeedback(context, gameState.protocol, 0, 0, isEmptyRow: true),
                       ],

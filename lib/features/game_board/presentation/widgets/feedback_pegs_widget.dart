@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/security_protocol.dart';
 import 'feedback_explanation_dialog.dart';
 
@@ -42,8 +43,9 @@ class FeedbackPegsWidget extends StatelessWidget {
         ? FeedbackSquare(pegs: pegData)
         : FeedbackRing(pegs: pegData);
 
+    final isMobile = isMobileBrowser;
     return Padding(
-      padding: const EdgeInsets.only(right: DesignTokens.gutter),
+      padding: EdgeInsets.only(right: isMobile ? 4.0 : DesignTokens.gutter),
       child: FeedbackInteractiveContainer(
         onTap: () {
           showDialog(
