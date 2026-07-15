@@ -1,13 +1,23 @@
 {
-    "name": "hex_breaker",
-    "short_name": "hex_breaker",
+    "name": "Hex_Breaker",
+    "short_name": "Hex_Breaker",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#131313",
+    "theme_color": "#00E5FF",
+    "description": "A futuristic cyberpunk codebreaking puzzle game. Crack the encrypted security protocols and break the hex firewall.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
+    "categories": ["games", "utilities"],
+    "screenshots": [
+        {
+            "src": "og-image.jpg",
+            "sizes": "1280x720",
+            "type": "image/jpeg",
+            "form_factor": "wide",
+            "label": "Hex_Breaker Gameplay"
+        }
+    ],
     "icons": [
         {
             "src": "icons/Icon-192.png",
