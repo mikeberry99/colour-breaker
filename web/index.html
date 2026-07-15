@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -23,13 +24,13 @@
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="colour_breaker">
+  <meta name="apple-mobile-web-app-title" content="hex_breaker">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-  <title>colour_breaker</title>
+  <title>hex_breaker</title>
   <link rel="manifest" href="manifest.json">
 
   <!-- Google Analytics Tracking -->
@@ -47,26 +48,26 @@
       document.head.appendChild(script);
 
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', GA_MEASUREMENT_ID);
 
       // JS helper function called from Flutter Dart to track game mode select
-      window.trackGameMode = function(modeName) {
+      window.trackGameMode = function (modeName) {
         gtag('event', 'game_start', {
           'game_mode': modeName
         });
       };
 
       // JS helper function called from Flutter Dart to track page visits
-      window.trackPageVisit = function(pageName) {
+      window.trackPageVisit = function (pageName) {
         gtag('event', 'page_visit', {
           'page_name': pageName
         });
       };
 
       // JS helper function to track successfully solved games
-      window.trackGameWon = function(modeName, attempts) {
+      window.trackGameWon = function (modeName, attempts) {
         gtag('event', 'game_won', {
           'game_mode': modeName,
           'attempts': attempts
@@ -74,7 +75,7 @@
       };
 
       // JS helper function to track failed games (exceeded attempts)
-      window.trackGameLost = function(modeName, attempts) {
+      window.trackGameLost = function (modeName, attempts) {
         gtag('event', 'game_lost', {
           'game_mode': modeName,
           'attempts': attempts
@@ -83,22 +84,24 @@
     } else {
       // Fallback stubs for development or if analytics is disabled
       const ENABLE_DEBUG_LOGS = false;
-      window.trackGameMode = function(modeName) {
+      window.trackGameMode = function (modeName) {
         if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Game start: ' + modeName);
       };
-      window.trackPageVisit = function(pageName) {
+      window.trackPageVisit = function (pageName) {
         if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Page visit: ' + pageName);
       };
-      window.trackGameWon = function(modeName, attempts) {
+      window.trackGameWon = function (modeName, attempts) {
         if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Game won: ' + modeName + ' in ' + attempts + ' attempts');
       };
-      window.trackGameLost = function(modeName, attempts) {
+      window.trackGameLost = function (modeName, attempts) {
         if (ENABLE_DEBUG_LOGS) console.log('[Analytics Mock] Game lost: ' + modeName + ' after ' + attempts + ' attempts');
       };
     }
   </script>
 </head>
+
 <body>
   <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>

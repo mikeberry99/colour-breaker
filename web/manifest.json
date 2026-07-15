@@ -1,6 +1,6 @@
 {
-    "name": "colour_breaker",
-    "short_name": "colour_breaker",
+    "name": "hex_breaker",
+    "short_name": "hex_breaker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

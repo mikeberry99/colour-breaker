@@ -9,16 +9,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:colour_breaker/main.dart';
+import 'package:hex_breaker/main.dart';
 
 void main() {
   testWidgets('Smoke test - Verify Level Selection and navigation to Game Board', (WidgetTester tester) async {
     GoogleFonts.config.allowRuntimeFetching = false;
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const ProviderScope(child: ColourBreakerApp()));
+    await tester.pumpWidget(const ProviderScope(child: HexBreakerApp()));
 
     // Verify that the selection screen title and header are present.
-    expect(find.text('CODE HACKER'), findsOneWidget);
+    expect(find.text('HEX_BREAKER'), findsOneWidget);
     expect(find.text('SYSTEM ACCESS'), findsOneWidget);
     expect(find.text('SELECT SECURITY PROTOCOL'), findsOneWidget);
 

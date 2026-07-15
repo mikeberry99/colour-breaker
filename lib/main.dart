@@ -4,16 +4,16 @@ import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 
 void main() {
-  runApp(const ProviderScope(child: ColourBreakerApp()));
+  runApp(const ProviderScope(child: HexBreakerApp()));
 }
 
-class ColourBreakerApp extends StatelessWidget {
-  const ColourBreakerApp({super.key});
+class HexBreakerApp extends StatelessWidget {
+  const HexBreakerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Colour Breaker',
+      title: 'HEX_BREAKER',
       theme: AppTheme.darkTheme,
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,

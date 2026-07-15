@@ -24,111 +24,115 @@ class LevelSelectionScreen extends ConsumerWidget {
       AnalyticsHelper.instance.trackPageVisit('level_selection');
     });
 
-    return Scaffold(
-      backgroundColor: DesignTokens.background,
-      body: Stack(
-        children: [
-          // 1. Radial Background Gradient
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.topCenter,
-                  radius: 1.2,
-                  colors: [
-                    Color(0xFF201F1F),
-                    Color(0xFF131313),
-                  ],
+    return Title(
+      title: 'Hex_Breaker - Level Select',
+      color: DesignTokens.primaryNeonCyan,
+      child: Scaffold(
+        backgroundColor: DesignTokens.background,
+        body: Stack(
+          children: [
+            // 1. Radial Background Gradient
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment.topCenter,
+                    radius: 1.2,
+                    colors: [
+                      Color(0xFF201F1F),
+                      Color(0xFF131313),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-
-          // 2. Custom Scanline Overlay
-          const Positioned.fill(
-            child: IgnorePointer(
-              child: CustomPaint(
-                painter: ScanlinePainter(),
+  
+            // 2. Custom Scanline Overlay
+            const Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(
+                  painter: ScanlinePainter(),
+                ),
               ),
             ),
-          ),
-
-          // 3. Main Content
-          SafeArea(
-            child: Column(
-              children: [
-                // Top Custom AppBar (with glass effect and blur)
-                _buildAppBar(context),
-
-                // Main scrollable content
-                Expanded(
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(
-                          DesignTokens.gutter,
-                          32,
-                          DesignTokens.gutter,
-                          120, // Add spacing for bottom fixed bar
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // Header
-                            const SizedBox(height: 16),
-                            Text(
-                              'SYSTEM ACCESS',
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.headlineLarge?.copyWith(
-                                fontFamily: DesignTokens.headlineFont,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -0.02,
-                                color: DesignTokens.onSurface,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'SELECT SECURITY PROTOCOL',
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.8),
-                                letterSpacing: 2.0,
-                              ),
-                            ),
-                            const SizedBox(height: 32),
-
-                            // Protocols cards Column
-                            ...SecurityProtocol.values.map((protocol) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: DesignTokens.gutter),
-                                child: LevelOptionCard(
-                                  protocol: protocol,
-                                  isSelected: selectedProtocol == protocol,
-                                  onTap: () {
-                                    ref.read(selectedProtocolProvider.notifier).setProtocol(protocol);
-                                  },
+  
+            // 3. Main Content
+            SafeArea(
+              child: Column(
+                children: [
+                  // Top Custom AppBar (with glass effect and blur)
+                  _buildAppBar(context),
+  
+                  // Main scrollable content
+                  Expanded(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.fromLTRB(
+                            DesignTokens.gutter,
+                            32,
+                            DesignTokens.gutter,
+                            120, // Add spacing for bottom fixed bar
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Header
+                              const SizedBox(height: 16),
+                              Text(
+                                'SYSTEM ACCESS',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.headlineLarge?.copyWith(
+                                  fontFamily: DesignTokens.headlineFont,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -0.02,
+                                  color: DesignTokens.onSurface,
                                 ),
-                              );
-                            }),
-                          ],
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'SELECT SECURITY PROTOCOL',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.8),
+                                  letterSpacing: 2.0,
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+  
+                              // Protocols cards Column
+                              ...SecurityProtocol.values.map((protocol) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: DesignTokens.gutter),
+                                  child: LevelOptionCard(
+                                    protocol: protocol,
+                                    isSelected: selectedProtocol == protocol,
+                                    onTap: () {
+                                      ref.read(selectedProtocolProvider.notifier).setProtocol(protocol);
+                                    },
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-
-          // 4. Fixed Bottom Action Area (Glass bar with button)
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _buildBottomAction(context),
-          ),
-        ],
+  
+            // 4. Fixed Bottom Action Area (Glass bar with button)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: _buildBottomAction(context),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -163,7 +167,7 @@ class LevelSelectionScreen extends ConsumerWidget {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'CODE HACKER',
+                        'HEX_BREAKER',
                         style: GoogleFonts.sora(
                           fontSize: 36,
                           fontWeight: FontWeight.w800,

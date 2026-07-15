@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/game_color.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/game_seed.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/security_protocol.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/game_color.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/game_seed.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/security_protocol.dart';
 
 void main() {
   group('GameSeed', () {

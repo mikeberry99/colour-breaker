@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/design_tokens.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/game_color.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/game_color.dart';
 
 class NeonOrb extends StatelessWidget {
   final GameColor? gameColor;

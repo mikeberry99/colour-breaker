@@ -283,8 +283,8 @@ class _ShareButtonState extends State<_ShareButton> {
 
   void _handleShare() {
     final String text = widget.isWin 
-      ? 'I cracked the Code Hacker sequence in ${widget.attempts} attempts! Seed: ${widget.seed}. Can you beat my score?'
-      : 'Code Hacker proved too tough this time. Seed: ${widget.seed}. Give it a try!';
+      ? 'I cracked the HEX_BREAKER sequence in ${widget.attempts} attempts! Seed: ${widget.seed}. Can you beat my score?'
+      : 'HEX_BREAKER proved too tough this time. Seed: ${widget.seed}. Give it a try!';
       
     Clipboard.setData(ClipboardData(text: text));
     

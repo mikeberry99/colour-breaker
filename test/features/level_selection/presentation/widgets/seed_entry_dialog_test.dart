@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/game_color.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/game_seed.dart';
-import 'package:colour_breaker/features/level_selection/presentation/widgets/seed_entry_dialog.dart';
-import 'package:colour_breaker/features/level_selection/presentation/providers/level_selection_provider.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/game_color.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/game_seed.dart';
+import 'package:hex_breaker/features/level_selection/presentation/widgets/seed_entry_dialog.dart';
+import 'package:hex_breaker/features/level_selection/presentation/providers/level_selection_provider.dart';
 
 void main() {
   testWidgets('SeedEntryDialog extracts seed from pasted share messages', (WidgetTester tester) async {
@@ -36,7 +36,7 @@ void main() {
     }
 
     // 1. Test victory share message
-    final victoryMessage = 'I cracked the Code Hacker sequence in 5 attempts! Seed: $seed. Can you beat my score?';
+    final victoryMessage = 'I cracked the HEX_BREAKER sequence in 5 attempts! Seed: $seed. Can you beat my score?';
     await tester.enterText(textFieldFinder, victoryMessage);
     await tester.pump();
 
@@ -48,7 +48,7 @@ void main() {
     await tester.pump();
 
     // 2. Test defeat share message
-    final defeatMessage = 'Code Hacker proved too tough this time. Seed: $seed. Give it a try!';
+    final defeatMessage = 'HEX_BREAKER proved too tough this time. Seed: $seed. Give it a try!';
     await tester.enterText(textFieldFinder, defeatMessage);
     await tester.pump();
 

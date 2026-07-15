@@ -1,4 +1,4 @@
-I want to build a prototype based on my Stitch design. Please connect to my Stitch MCP server and fetch the project named "Colour Breaker".
+I want to build a prototype based on my Stitch design. Please connect to my Stitch MCP server and fetch the project named "HEX_BREAKER".
 
 Before you start generating code, analyze the Design DNA (layout, token systems, and components). Map out a Clean Architecture structure for a Flutter app and give me a high-level summary of what you plan to implement to confirm we are aligned. 
 

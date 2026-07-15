@@ -1,4 +1,4 @@
-# Colour Breaker
+# HEX_BREAKER
 
 A cyberpunk-themed code-breaking puzzle game built entirely in Flutter, targeting the web as a client-side application. 
 
@@ -11,7 +11,7 @@ This project was built as an experimental sandbox with two primary objectives:
 
 ## About the Game
 
-**Colour Breaker** is inspired by classic mastermind mechanics but wrapped in a sleek, hacker-themed aesthetic. 
+**HEX_BREAKER** is inspired by classic mastermind mechanics but wrapped in a sleek, hacker-themed aesthetic. 
 
 * **Objective:** Crack the system's hidden color code before you run out of attempts.
 * **Mechanics:** Place color pegs into empty slots, submit your sequence, and analyze the feedback (correct colors in correct positions vs. correct colors in wrong positions) to deduce the final code.

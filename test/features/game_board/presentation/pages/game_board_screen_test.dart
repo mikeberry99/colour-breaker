@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:colour_breaker/core/utils/platform_utils.dart';
-import 'package:colour_breaker/features/game_board/presentation/pages/game_board_screen.dart';
-import 'package:colour_breaker/features/game_board/presentation/widgets/active_guess_row.dart';
-import 'package:colour_breaker/features/game_board/presentation/widgets/submit_button.dart';
-import 'package:colour_breaker/features/game_board/presentation/widgets/color_palette.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/game_state.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/security_protocol.dart';
-import 'package:colour_breaker/features/game_board/presentation/widgets/game_result_overlay.dart';
+import 'package:hex_breaker/core/utils/platform_utils.dart';
+import 'package:hex_breaker/features/game_board/presentation/pages/game_board_screen.dart';
+import 'package:hex_breaker/features/game_board/presentation/widgets/active_guess_row.dart';
+import 'package:hex_breaker/features/game_board/presentation/widgets/submit_button.dart';
+import 'package:hex_breaker/features/game_board/presentation/widgets/color_palette.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/game_state.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/security_protocol.dart';
+import 'package:hex_breaker/features/game_board/presentation/widgets/game_result_overlay.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {

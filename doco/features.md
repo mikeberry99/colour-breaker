@@ -6,6 +6,7 @@
   - Limited white space around feedback for 5 colors
 - Fix the game name. Can this be more interesting?
 - Change the page titles for the two pages
+- page meta data also needs to be fixed
 - Check analytics is working okay.
 
 ## DONE
@@ -46,4 +47,4 @@ Example 8
  Prosperity: In Chinese culture, the number 8 is deeply associated with wealth and good fortune because the word for eight (bā) sounds like the word for "prosper" (fā).
  Music: A diatonic musical scale spans 8 notes, which is known as an octave
 
- I cracked the Code Hacker sequence in 7 attempts! Seed: ANEAR. Can you beat my score?
+ I cracked the HEX_BREAKER sequence in 7 attempts! Seed: ANEAR. Can you beat my score?

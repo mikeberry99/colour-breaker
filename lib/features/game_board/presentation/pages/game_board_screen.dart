@@ -112,7 +112,7 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
                     },
                   ),
                   Text(
-                    'CODE HACKER',
+                    'HEX_BREAKER',
                     style: GoogleFonts.sora(
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
@@ -167,128 +167,132 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
 
     final isMobile = isMobileBrowser;
 
-    return Scaffold(
-      backgroundColor: DesignTokens.background,
-      drawer: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Colors.transparent,
+    return Title(
+      title: 'Hex_Breaker - Game',
+      color: DesignTokens.primaryNeonCyan,
+      child: Scaffold(
+        backgroundColor: DesignTokens.background,
+        drawer: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Colors.transparent,
+          ),
+          child: const _CustomSideDrawer(),
         ),
-        child: const _CustomSideDrawer(),
-      ),
-      // Fixed glass footer — matches Stitch <footer class="fixed bottom-0 glass-card border-t">
-      bottomNavigationBar: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0x08FFFFFF), // rgba(255,255,255,0.03)
-              border: Border(
-                top: BorderSide(color: Color(0xFF3B494B), width: 1),
+        // Fixed glass footer — matches Stitch <footer class="fixed bottom-0 glass-card border-t">
+        bottomNavigationBar: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Color(0x08FFFFFF), // rgba(255,255,255,0.03)
+                border: Border(
+                  top: BorderSide(color: Color(0xFF3B494B), width: 1),
+                ),
               ),
-            ),
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
-            child: Center(
-              heightFactor: 1.0,
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (isMobile) ...[
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ActiveGuessRow(),
-                          SizedBox(width: 8),
-                          SubmitButton(),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      const Center(child: ColorPalette()),
-                    ] else ...[
-                      const ActiveGuessRow(),
-                      const SizedBox(height: 8),
-                      const Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ColorPalette(),
-                          SizedBox(width: 12),
-                          Expanded(child: SubmitButton()),
-                        ],
-                      ),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+              child: Center(
+                heightFactor: 1.0,
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (isMobile) ...[
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ActiveGuessRow(),
+                            SizedBox(width: 8),
+                            SubmitButton(),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        const Center(child: ColorPalette()),
+                      ] else ...[
+                        const ActiveGuessRow(),
+                        const SizedBox(height: 8),
+                        const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ColorPalette(),
+                            SizedBox(width: 12),
+                            Expanded(child: SubmitButton()),
+                          ],
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                _buildAppBar(context),
-                Expanded(
-                  child: Center(
-                    child: Container(
-                      constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                      child: Column(
-                        children: [
-                          const HeaderWidget(),
-                          const SizedBox(height: 12),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              key: _scrollViewKey,
-                              controller: _scrollController,
-                              reverse: true,
-                              padding: const EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
-                              child: Column(
-                                children: [
-                                  HistoryLog(activeRowKey: _activeRowKey),
-                                  const SizedBox(height: 24),
-                                ],
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  _buildAppBar(context),
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
+                        child: Column(
+                          children: [
+                            const HeaderWidget(),
+                            const SizedBox(height: 12),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                key: _scrollViewKey,
+                                controller: _scrollController,
+                                reverse: true,
+                                padding: const EdgeInsets.symmetric(horizontal: DesignTokens.gutter),
+                                child: Column(
+                                  children: [
+                                    HistoryLog(activeRowKey: _activeRowKey),
+                                    const SizedBox(height: 24),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            if (isGameOver && !isDismissed)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.7),
-                  child: Center(
-                    child: Container(
-                      constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
-                      child: Builder(
-                        builder: (context) {
-                          final solution = ref.read(gameStateProvider.notifier).revealedSolution;
-                          final seed = solution != null ? GameSeed.encode(gameState.protocol, solution.colors) : '';
-                          return GameResultOverlay(
-                            gameState: gameState,
-                            sessionSeed: seed,
-                            onClose: () {
-                              ref.read(overlayDismissedProvider.notifier).dismiss();
-                            },
-                            onNewGame: () {
-                              ref.read(gameStateProvider.notifier).restartGame();
-                              context.go('/');
-                            },
-                          );
-                        }
-                      ),
-                    ),
-                  ),
-                ),
+                ],
               ),
-          ],
+              if (isGameOver && !isDismissed)
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.black.withValues(alpha: 0.7),
+                    child: Center(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: DesignTokens.maxBoardWidth),
+                        child: Builder(
+                          builder: (context) {
+                            final solution = ref.read(gameStateProvider.notifier).revealedSolution;
+                            final seed = solution != null ? GameSeed.encode(gameState.protocol, solution.colors) : '';
+                            return GameResultOverlay(
+                              gameState: gameState,
+                              sessionSeed: seed,
+                              onClose: () {
+                                ref.read(overlayDismissedProvider.notifier).dismiss();
+                              },
+                              onNewGame: () {
+                                ref.read(gameStateProvider.notifier).restartGame();
+                                context.go('/');
+                              },
+                            );
+                          }
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

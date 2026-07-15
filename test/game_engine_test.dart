@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/game_color.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/game_state.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/guess.dart';
-import 'package:colour_breaker/features/game_board/domain/entities/number_quotes.dart';
-import 'package:colour_breaker/features/game_board/domain/use_cases/game_engine.dart';
-import 'package:colour_breaker/features/game_board/presentation/providers/game_provider.dart';
-import 'package:colour_breaker/features/level_selection/presentation/providers/level_selection_provider.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/game_color.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/game_state.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/guess.dart';
+import 'package:hex_breaker/features/game_board/domain/entities/number_quotes.dart';
+import 'package:hex_breaker/features/game_board/domain/use_cases/game_engine.dart';
+import 'package:hex_breaker/features/game_board/presentation/providers/game_provider.dart';
+import 'package:hex_breaker/features/level_selection/presentation/providers/level_selection_provider.dart';
 
 void main() {
   group('GameEngine Sequence Evaluation', () {

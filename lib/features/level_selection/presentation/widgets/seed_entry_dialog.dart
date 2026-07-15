@@ -187,7 +187,7 @@ class SeedPasteFormatter extends TextInputFormatter {
     
     // Check fallback for any 5-letter word that decodes as a valid seed,
     // if the text contains keywords of the share message.
-    if (text.contains('I cracked') || text.contains('Code Hacker') || text.contains('tough this time')) {
+    if (text.contains('I cracked') || text.contains('Code Hacker') || text.contains('HEX_BREAKER') || text.contains('tough this time')) {
       final words = text.split(RegExp(r'[\s!,.\?]+'));
       for (final word in words) {
         if (word.length == 5) {
