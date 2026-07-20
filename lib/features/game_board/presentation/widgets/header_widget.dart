@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
-import '../../../../core/ui/neon_orb.dart';
+import '../../../../core/ui/hexagon_clipper.dart';
+import '../../../../core/ui/neon_hex.dart';
 import '../../domain/entities/game_state.dart';
 import '../providers/game_provider.dart';
 import '../providers/reveal_animation_provider.dart';
@@ -168,8 +169,8 @@ class _HeaderInteractiveContainerState extends State<_HeaderInteractiveContainer
   }
 }
 
-/// A recessed circular slot with a lock icon — matches the Stitch
-/// `.recessed-slot` style with a filled Material `lock` symbol.
+/// A recessed hexagonal slot with a lock icon — matches the hex orb style
+/// with a filled Material `lock` symbol.
 class _LockedSlot extends StatelessWidget {
   final double size;
 
@@ -177,31 +178,52 @@ class _LockedSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: const RadialGradient(
-          colors: [
-            DesignTokens.surfaceContainerHigh, // #2A2A2A
-            DesignTokens.boardSurface, // #1E1E1E
-          ],
-          center: Alignment.center,
-          radius: 0.8,
-        ),
-        border: Border.all(
-          color: DesignTokens.outlineVariant, // #3B494B
-          width: 0.5,
-        ),
-      ),
-      child: Center(
-        child: Icon(
-          Icons.lock,
-          color: DesignTokens.primaryNeonCyan,
-          size: size * 0.45,
+      child: ClipPath(
+        clipper: const HexagonClipper(),
+        child: CustomPaint(
+          painter: _LockedSlotPainter(),
+          child: Center(
+            child: Icon(
+              Icons.lock,
+              color: DesignTokens.primaryNeonCyan,
+              size: size * 0.45,
+            ),
+          ),
         ),
       ),
     );
   }
+}
+
+class _LockedSlotPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = hexagonPath(size);
+
+    // Gradient fill
+    final rect = Offset.zero & size;
+    final fillPaint = Paint()
+      ..shader = const RadialGradient(
+        colors: [
+          DesignTokens.surfaceContainerHigh, // #2A2A2A
+          DesignTokens.boardSurface, // #1E1E1E
+        ],
+        center: Alignment.center,
+        radius: 0.8,
+      ).createShader(rect);
+    canvas.drawPath(path, fillPaint);
+
+    // Border
+    final borderPaint = Paint()
+      ..color = DesignTokens.outlineVariant // #3B494B
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.5;
+    canvas.drawPath(path, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _LockedSlotPainter oldDelegate) => false;
 }

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/design_tokens.dart';
+import 'hexagon_clipper.dart';
 import 'package:hex_breaker/features/game_board/domain/entities/game_color.dart';
 
 class NeonOrb extends StatelessWidget {
@@ -25,19 +26,17 @@ class NeonOrb extends StatelessWidget {
     final effectiveColor = color ?? gameColor?.uiColor;
 
     if (effectiveIsEmpty || effectiveColor == null) {
-      return Container(
+      return SizedBox(
         width: size,
         height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [DesignTokens.boardSurface, DesignTokens.surfaceContainerHigh],
-            center: Alignment.center,
-            radius: 0.8,
-          ),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.1),
-            width: 0.5,
+        child: ClipPath(
+          clipper: const HexagonClipper(),
+          child: CustomPaint(
+            painter: _HexagonBackgroundPainter(
+              fillGradientColors: [DesignTokens.boardSurface, DesignTokens.surfaceContainerHigh],
+              borderColor: Colors.white.withValues(alpha: 0.1),
+              borderWidth: 0.5,
+            ),
           ),
         ),
       );
@@ -45,33 +44,103 @@ class NeonOrb extends StatelessWidget {
 
     final shape = gameColor?.orbShape ?? OrbShape.none;
 
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: effectiveColor,
-        border: isSelected
-            ? Border.all(color: Colors.white, width: 2.0)
-            : Border.all(color: Colors.transparent, width: 2.0),
-        boxShadow: [
-          BoxShadow(
-            color: effectiveColor.withValues(alpha: 0.3),
-            blurRadius: 10,
-            spreadRadius: isSelected ? 4 : 2,
-          ),
-        ],
+      child: CustomPaint(
+        painter: _HexagonOrbPainter(
+          color: effectiveColor,
+          isSelected: isSelected,
+        ),
+        child: shape != OrbShape.none
+            ? Center(
+                child: CustomPaint(
+                  size: Size(size * 0.48, size * 0.48),
+                  painter: _ShapePainter(shape: shape),
+                ),
+              )
+            : null,
       ),
-      child: shape != OrbShape.none
-          ? Center(
-              child: CustomPaint(
-                size: Size(size * 0.48, size * 0.48),
-                painter: _ShapePainter(shape: shape),
-              ),
-            )
-          : null,
     );
   }
+}
+
+/// Paints a filled hexagon orb with optional selection border and glow shadow.
+class _HexagonOrbPainter extends CustomPainter {
+  final Color color;
+  final bool isSelected;
+
+  const _HexagonOrbPainter({required this.color, required this.isSelected});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = hexagonPath(size);
+
+    // Glow shadow
+    final shadowPaint = Paint()
+      ..color = color.withValues(alpha: 0.3)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, isSelected ? 8 : 5);
+    canvas.drawPath(path, shadowPaint);
+
+    // Fill
+    final fillPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(path, fillPaint);
+
+    // Border
+    if (isSelected) {
+      final borderPaint = Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0;
+      canvas.drawPath(path, borderPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_HexagonOrbPainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.isSelected != isSelected;
+}
+
+/// Paints an empty hexagon slot with a radial-gradient-like fill and thin border.
+class _HexagonBackgroundPainter extends CustomPainter {
+  final List<Color> fillGradientColors;
+  final Color borderColor;
+  final double borderWidth;
+
+  const _HexagonBackgroundPainter({
+    required this.fillGradientColors,
+    required this.borderColor,
+    required this.borderWidth,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = hexagonPath(size);
+
+    // Gradient fill
+    final rect = Offset.zero & size;
+    final fillPaint = Paint()
+      ..shader = RadialGradient(
+        colors: fillGradientColors,
+        center: Alignment.center,
+        radius: 0.8,
+      ).createShader(rect);
+    canvas.drawPath(path, fillPaint);
+
+    // Border
+    final borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth;
+    canvas.drawPath(path, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(_HexagonBackgroundPainter oldDelegate) =>
+      oldDelegate.borderColor != borderColor ||
+      oldDelegate.borderWidth != borderWidth;
 }
 
 /// Paints a filled black geometric shape inside the orb.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
-import '../../../../core/ui/neon_orb.dart';
+import '../../../../core/ui/neon_hex.dart';
 import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/game_color.dart';
 import '../../domain/entities/game_state.dart';

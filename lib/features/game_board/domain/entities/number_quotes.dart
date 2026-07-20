@@ -109,10 +109,10 @@ class NumberQuotes {
     ]
   };
 
-  static String? getRandomQuote(int attempts) {
+  static String getRandomQuote(int attempts) {
     final list = _quotes[attempts];
     if (list == null || list.isEmpty) {
-      return null;
+      return "Sequence decrypted successfully. Well done!";
     }
     final random = Random();
     return list[random.nextInt(list.length)];

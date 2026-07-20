@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
-import '../../../../core/ui/neon_orb.dart';
+import '../../../../core/ui/hexagon_clipper.dart';
+import '../../../../core/ui/neon_hex.dart';
 import '../../domain/entities/game_color.dart';
 import '../../domain/entities/game_state.dart';
 import '../providers/game_provider.dart';
@@ -89,33 +90,57 @@ class _PaletteOrbState extends State<_PaletteOrb> {
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 200),
         opacity: widget.isEnabled ? 1.0 : 0.4,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: showHover
-                  ? DesignTokens.primaryNeonCyan
-                  : Colors.transparent,
-              width: 1.5,
-            ),
-            boxShadow: showHover
-                ? [
-                    BoxShadow(
-                      color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
-                      blurRadius: 6,
-                      spreadRadius: 1,
-                    ),
-                  ]
+        child: SizedBox(
+          width: 44,
+          height: 44,
+          child: CustomPaint(
+            painter: showHover
+                ? _HexHoverPainter(
+                    borderColor: DesignTokens.primaryNeonCyan,
+                    glowColor: DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
+                  )
                 : null,
-          ),
-          child: NeonOrb(
-            gameColor: widget.color,
-            size: 38,
+            child: Center(
+              child: NeonOrb(
+                gameColor: widget.color,
+                size: 38,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+/// Paints a hexagonal hover border with an outer glow.
+class _HexHoverPainter extends CustomPainter {
+  final Color borderColor;
+  final Color glowColor;
+
+  const _HexHoverPainter({required this.borderColor, required this.glowColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = hexagonPath(size);
+
+    // Glow
+    final glowPaint = Paint()
+      ..color = glowColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+    canvas.drawPath(path, glowPaint);
+
+    // Border
+    final borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    canvas.drawPath(path, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(_HexHoverPainter oldDelegate) =>
+      oldDelegate.borderColor != borderColor || oldDelegate.glowColor != glowColor;
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
-import '../../../../core/ui/neon_orb.dart';
-import '../../../../core/ui/dashed_circle.dart';
+import '../../../../core/ui/neon_hex.dart';
+import '../../../../core/ui/dashed_hexagon.dart';
 import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/game_color.dart';
 import '../../domain/entities/game_state.dart';
@@ -37,7 +37,9 @@ class ActiveGuessRow extends ConsumerWidget {
                 onTap: hasColor && isPlaying
                     ? () {
                         // tap a filled slot to remove it (remove from index onwards)
-                        ref.read(gameStateProvider.notifier).removeColorAt(index);
+                        ref
+                            .read(gameStateProvider.notifier)
+                            .removeColorAt(index);
                       }
                     : null,
                 child: TweenAnimationBuilder<Color?>(

@@ -226,13 +226,13 @@ void main() {
       for (int i = 1; i <= 15; i++) {
         final quote = NumberQuotes.getRandomQuote(i);
         expect(quote, isNotNull);
-        expect(quote!.isNotEmpty, isTrue);
+        expect(quote.isNotEmpty, isTrue);
       }
     });
 
-    test('Return null for attempts > 15', () {
+    test('Return generic quote for attempts > 15', () {
       final quote = NumberQuotes.getRandomQuote(16);
-      expect(quote, isNull);
+      expect(quote, equals('Sequence decrypted successfully. Well done!'));
     });
 
     test('Selects quote on game won', () {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/ui/hexagon_clipper.dart';
 import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/game_state.dart';
 
@@ -30,7 +31,8 @@ class GameResultOverlay extends StatelessWidget {
     final alertText = isWin ? 'Alert: Success' : 'Alert: Failed';
     final headerText = isWin ? 'System Breached' : 'Access Denied';
     final subtitleText = isWin ? 'ENCRYPTION BYPASSED' : 'SYSTEM LOCKED';
-    final quoteText = gameState.selectedQuote ?? 'Mission failed. Try again.';
+    final quoteText = gameState.selectedQuote ??
+        (isWin ? 'Sequence decrypted successfully. Well done!' : 'Mission failed. Try again.');
 
     return Stack(
       children: [
@@ -133,41 +135,45 @@ class GameResultOverlay extends StatelessWidget {
                     
                     SizedBox(height: isMobile ? 16 : 32),
                     
-                    // Stats
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: isMobile ? 12 : 24),
-                      decoration: BoxDecoration(
-                        color: DesignTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: DesignTokens.outlineVariant.withValues(alpha: 0.3),
+                    // Stats — hexagon container
+                    Center(
+                      child: SizedBox(
+                        width: isMobile ? 130 : 170,
+                        height: isMobile ? 130 : 170,
+                        child: CustomPaint(
+                          painter: _HexStatsPainter(
+                            fillColor: DesignTokens.surfaceContainerLow,
+                            borderColor: DesignTokens.outlineVariant.withValues(alpha: 0.3),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'ATTEMPTS',
+                                  style: TextStyle(
+                                    fontFamily: DesignTokens.labelFont,
+                                    fontSize: isMobile ? 10 : 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: DesignTokens.onSurfaceVariant,
+                                    letterSpacing: 1.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  attempts.toString().padLeft(2, '0'),
+                                  style: TextStyle(
+                                    fontFamily: DesignTokens.headlineFont,
+                                    fontSize: isMobile ? 48 : 64,
+                                    height: 1.0,
+                                    fontWeight: FontWeight.w800,
+                                    color: color,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            'ATTEMPTS',
-                            style: TextStyle(
-                              fontFamily: DesignTokens.labelFont,
-                              fontSize: isMobile ? 10 : 12,
-                              fontWeight: FontWeight.bold,
-                              color: DesignTokens.onSurfaceVariant,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            attempts.toString().padLeft(2, '0'),
-                            style: TextStyle(
-                              fontFamily: DesignTokens.headlineFont,
-                              fontSize: isMobile ? 48 : 64,
-                              height: 1.0,
-                              fontWeight: FontWeight.w800,
-                              color: color,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                     
@@ -405,4 +411,31 @@ class _NewGameButtonState extends State<_NewGameButton> {
       ),
     );
   }
+}
+
+class _HexStatsPainter extends CustomPainter {
+  final Color fillColor;
+  final Color borderColor;
+
+  const _HexStatsPainter({required this.fillColor, required this.borderColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = hexagonPath(size);
+
+    final fillPaint = Paint()
+      ..color = fillColor
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(path, fillPaint);
+
+    final borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    canvas.drawPath(path, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(_HexStatsPainter oldDelegate) =>
+      oldDelegate.fillColor != fillColor || oldDelegate.borderColor != borderColor;
 }
