@@ -20,6 +20,9 @@ class DesignTokens {
   static const Color feedbackGreen = Color(0xFF39FF14); // Perfect match
   static const Color feedbackYellow = Color(0xFFFFF01F); // Partial match
   static const Color outline = Color(0xFF333333);
+  
+  // Feedback Component Style Toggle (set to false to revert to classic pegs)
+  static const bool useSegmentRingFeedback = true;
 
   // 6 Game Palette Colors — extracted directly from Stitch HTML
   static const List<Color> gamePalette = [

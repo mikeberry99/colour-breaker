@@ -39,9 +39,11 @@ class FeedbackPegsWidget extends StatelessWidget {
       }
     }
 
-    final child = pegCount == 4
-        ? FeedbackSquare(pegs: pegData)
-        : FeedbackRing(pegs: pegData);
+    final child = DesignTokens.useSegmentRingFeedback
+        ? FeedbackSegmentRing(pegs: pegData)
+        : (pegCount == 4
+            ? FeedbackSquare(pegs: pegData)
+            : FeedbackRing(pegs: pegData));
 
     final isMobile = isMobileBrowser;
     return Padding(
@@ -266,3 +268,113 @@ class _FeedbackInteractiveContainerState extends State<FeedbackInteractiveContai
     );
   }
 }
+
+class FeedbackSegmentRing extends StatelessWidget {
+  final List<PegData> pegs;
+  final double size;
+
+  const FeedbackSegmentRing({
+    super.key,
+    required this.pegs,
+    this.size = 36.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(size, size),
+      painter: SegmentRingPainter(pegs: pegs),
+    );
+  }
+}
+
+class SegmentRingPainter extends CustomPainter {
+  final List<PegData> pegs;
+
+  SegmentRingPainter({required this.pegs});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final int count = pegs.length;
+    if (count == 0) return;
+
+    final Offset center = Offset(size.width / 2, size.height / 2);
+    final double outerRadius = size.width / 2;
+    final double innerRadius = outerRadius * 0.38; // Inner hole
+    final double sweepAngle = (2 * math.pi) / count;
+    final double gapAngle = 0.05; // Gap between ring segments in radians (~2.8 deg)
+    final double actualSweep = sweepAngle - gapAngle;
+
+    for (int i = 0; i < count; i++) {
+      final peg = pegs[i];
+      final double startAngle = -math.pi / 2 + i * sweepAngle + (gapAngle / 2);
+      final double midAngle = startAngle + actualSweep / 2;
+
+      final Color segColor = peg.isGlow
+          ? peg.color
+          : Colors.white.withValues(alpha: 0.12);
+
+      final Paint fillPaint = Paint()
+        ..color = segColor
+        ..style = PaintingStyle.fill;
+
+      final Path path = Path();
+      path.arcTo(
+        Rect.fromCircle(center: center, radius: outerRadius),
+        startAngle,
+        actualSweep,
+        false,
+      );
+      path.arcTo(
+        Rect.fromCircle(center: center, radius: innerRadius),
+        startAngle + actualSweep,
+        -actualSweep,
+        false,
+      );
+      path.close();
+
+      // Subtle glow for active green/yellow segments
+      if (peg.isGlow) {
+        final Paint glowPaint = Paint()
+          ..color = segColor.withValues(alpha: 0.35)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.5);
+        canvas.drawPath(path, glowPaint);
+      }
+
+      canvas.drawPath(path, fillPaint);
+
+      final Paint borderPaint = Paint()
+        ..color = Colors.black.withValues(alpha: 0.4)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+      canvas.drawPath(path, borderPaint);
+
+      // Black dot indicator for yellow segments (same dot style as peg design)
+      if (peg.color == DesignTokens.feedbackYellow && peg.isGlow) {
+        final double midRadius = (outerRadius + innerRadius) / 2;
+        final Offset dotCenter = Offset(
+          center.dx + midRadius * math.cos(midAngle),
+          center.dy + midRadius * math.sin(midAngle),
+        );
+        final Paint dotPaint = Paint()
+          ..color = DesignTokens.background
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(dotCenter, 1.8, dotPaint);
+      }
+    }
+
+    // Central dark hole
+    final Paint holePaint = Paint()
+      ..color = DesignTokens.background
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(center, innerRadius, holePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant SegmentRingPainter oldDelegate) {
+    return oldDelegate.pegs != pegs;
+  }
+}
+

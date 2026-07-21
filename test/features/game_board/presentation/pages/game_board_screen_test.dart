@@ -5,7 +5,6 @@ import 'package:hex_breaker/core/utils/platform_utils.dart';
 import 'package:hex_breaker/features/game_board/presentation/pages/game_board_screen.dart';
 import 'package:hex_breaker/features/game_board/presentation/widgets/active_guess_row.dart';
 import 'package:hex_breaker/features/game_board/presentation/widgets/submit_button.dart';
-import 'package:hex_breaker/features/game_board/presentation/widgets/color_palette.dart';
 import 'package:hex_breaker/features/game_board/domain/entities/game_state.dart';
 import 'package:hex_breaker/features/game_board/domain/entities/security_protocol.dart';
 import 'package:hex_breaker/features/game_board/presentation/widgets/game_result_overlay.dart';
@@ -43,11 +42,7 @@ void main() {
       matching: find.byType(Row),
     );
     
-    // We expect a row containing both ColorPalette and SubmitButton
-    bool foundDesktopRow = false;
-    for (final element in tester.renderObjectList(rowFinder)) {
-      // In Flutter tests, we can verify that the widgets are laid out in a Row
-    }
+    expect(rowFinder, findsWidgets);
   });
 
   testWidgets('GameBoardScreen displays optimized layout on mobile browser', (WidgetTester tester) async {
