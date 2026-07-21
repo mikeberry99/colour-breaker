@@ -63,7 +63,7 @@ class ActiveGuessRow extends ConsumerWidget {
                         height: 46,
                         child: Center(
                           child: NeonOrb(
-                            size: 32,
+                            size: 34,
                             gameColor: color,
                           ),
                         ),

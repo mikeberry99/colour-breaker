@@ -143,7 +143,7 @@ class HistoryLog extends ConsumerWidget {
                                     duration: const Duration(milliseconds: 250),
                                     child: NeonOrb(
                                       key: ValueKey(revealed ? color : GameColor.empty),
-                                      size: 32,
+                                      size: 34,
                                       gameColor: revealed ? color : GameColor.empty,
                                     ),
                                   ),
@@ -229,7 +229,7 @@ class HistoryLog extends ConsumerWidget {
                                     left: isMobile ? 4.0 : DesignTokens.unit,
                                     right: isMobile ? 4.0 : DesignTokens.unit,
                                   ),
-                                  child: const NeonOrb(size: 32, gameColor: GameColor.empty),
+                                  child: const NeonOrb(size: 34, gameColor: GameColor.empty),
                                 );
                               }),
                             ),
