@@ -198,6 +198,19 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (isMobile) ...[
+                        if (gameState.history.isEmpty) ...[
+                          Text(
+                            'Select a combination of coloured tiles to guess the hidden sequence.\nThe feedback on the right shows how many colours are correct.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: DesignTokens.labelFont,
+                              fontSize: 13,
+                              height: 1.3,
+                              color: DesignTokens.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                        ],
                         const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -210,6 +223,19 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
                         const SizedBox(height: 8),
                         const Center(child: ColorPalette()),
                       ] else ...[
+                        if (gameState.history.isEmpty) ...[
+                          Text(
+                            'Select a combination of coloured tiles to guess the hidden sequence.\nThe feedback on the right shows how many colours are correct.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: DesignTokens.labelFont,
+                              fontSize: 11,
+                              height: 1.3,
+                              color: DesignTokens.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                        ],
                         const ActiveGuessRow(),
                         const SizedBox(height: 8),
                         const Row(

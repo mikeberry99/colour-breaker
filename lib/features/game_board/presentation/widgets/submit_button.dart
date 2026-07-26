@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/ui/horizontal_hexagon_button.dart';
 import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/game_state.dart';
 import '../providers/game_provider.dart';
@@ -22,19 +23,38 @@ class _SubmitButtonState extends ConsumerState<SubmitButton> {
     final canSubmit = gameState.activeGuess.isCompleteFor(gameState.slotCount) &&
         gameState.status == GameStatus.playing;
 
-    final cursor = canSubmit ? SystemMouseCursors.click : SystemMouseCursors.basic;
-
     final isMobile = isMobileBrowser;
 
+    final fillColor = canSubmit
+        ? (_isHovered
+            ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.20)
+            : DesignTokens.primaryNeonCyan.withValues(alpha: 0.10))
+        : Colors.white.withValues(alpha: 0.03);
+
+    final borderColor = canSubmit
+        ? (_isHovered
+            ? DesignTokens.primaryNeonCyan
+            : DesignTokens.primaryNeonCyan.withValues(alpha: 0.6))
+        : Colors.white.withValues(alpha: 0.1);
+
+    final glowColor = canSubmit
+        ? DesignTokens.primaryNeonCyan.withValues(alpha: _isHovered ? 0.4 : 0.18)
+        : null;
+
+    final textColor = canSubmit
+        ? DesignTokens.primaryNeonCyan
+        : Colors.white.withValues(alpha: 0.3);
+
     return MouseRegion(
-      cursor: cursor,
+      cursor: canSubmit ? SystemMouseCursors.click : SystemMouseCursors.basic,
       onEnter: (_) {
         if (canSubmit) setState(() => _isHovered = true);
       },
       onExit: (_) {
         setState(() => _isHovered = false);
       },
-      child: GestureDetector(
+      child: HorizontalHexagonButton(
+        isEnabled: canSubmit,
         onTap: canSubmit
             ? () {
                 final newRowIndex = ref.read(gameStateProvider).history.length;
@@ -44,34 +64,18 @@ class _SubmitButtonState extends ConsumerState<SubmitButton> {
                     .startReveal(newRowIndex);
               }
             : null,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-          decoration: BoxDecoration(
-            color: canSubmit && _isHovered
-                ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.15)
-                : Colors.white.withValues(alpha: 0.03),
-            borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
-            border: Border.all(
-              color: canSubmit
-                  ? (_isHovered
-                      ? DesignTokens.primaryNeonCyan
-                      : DesignTokens.primaryNeonCyan.withValues(alpha: 0.6))
-                  : Colors.white.withValues(alpha: 0.1),
-              width: 2,
-            ),
-            boxShadow: canSubmit
-                ? [
-                    BoxShadow(
-                      color: DesignTokens.primaryNeonCyan.withValues(
-                        alpha: _isHovered ? 0.35 : 0.15,
-                      ),
-                      blurRadius: _isHovered ? 20 : 15,
-                      spreadRadius: 1,
-                    )
-                  ]
-                : null,
-          ),
+        fillColor: fillColor,
+        borderColor: borderColor,
+        glowColor: glowColor,
+        glowBlurRadius: _isHovered ? 20 : 15,
+        borderWidth: 2,
+        cutWidthRatio: 0.25,
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 10 : 8,
+          vertical: 12,
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
           child: Text(
             isMobile ? 'LOAD' : 'LOAD HACK',
             textAlign: TextAlign.center,
@@ -79,13 +83,11 @@ class _SubmitButtonState extends ConsumerState<SubmitButton> {
             softWrap: false,
             style: TextStyle(
               fontFamily: DesignTokens.labelFont,
-              fontSize: 12,
+              fontSize: isMobile ? 12 : 13,
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.1,
+              letterSpacing: 0.8,
               height: 1.4,
-              color: canSubmit
-                  ? DesignTokens.primaryNeonCyan
-                  : Colors.white.withValues(alpha: 0.3),
+              color: textColor,
             ),
           ),
         ),
@@ -93,3 +95,4 @@ class _SubmitButtonState extends ConsumerState<SubmitButton> {
     );
   }
 }
+

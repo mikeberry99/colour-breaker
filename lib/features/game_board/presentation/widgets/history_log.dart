@@ -152,10 +152,13 @@ class HistoryLog extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 250),
-                          opacity: pegsVisible ? 1.0 : 0.0,
-                          child: _buildFeedback(context, protocol, greenPegs, yellowPegs),
+                        _buildFeedback(
+                          context,
+                          protocol,
+                          pegsVisible ? greenPegs : 0,
+                          pegsVisible ? yellowPegs : 0,
+                          isEmptyRow: !pegsVisible,
+                          showHelpIndicator: index == 0,
                         ),
                       ],
                     ),
@@ -235,7 +238,7 @@ class HistoryLog extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        _buildFeedback(context, gameState.protocol, 0, 0, isEmptyRow: true),
+                        _buildFeedback(context, gameState.protocol, 0, 0, isEmptyRow: true, showHelpIndicator: index == 0),
                       ],
                     ),
                   ),
@@ -248,12 +251,20 @@ class HistoryLog extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeedback(BuildContext context, SecurityProtocol protocol, int greenPegs, int yellowPegs, {bool isEmptyRow = false}) {
+  Widget _buildFeedback(
+    BuildContext context,
+    SecurityProtocol protocol,
+    int greenPegs,
+    int yellowPegs, {
+    bool isEmptyRow = false,
+    bool showHelpIndicator = false,
+  }) {
     return FeedbackPegsWidget(
       protocol: protocol,
       greenPegs: greenPegs,
       yellowPegs: yellowPegs,
       isEmptyRow: isEmptyRow,
+      showHelpIndicator: showHelpIndicator,
     );
   }
 }

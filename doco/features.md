@@ -36,15 +36,7 @@
 
 - Add feature to give feedback on the number of guesses when solved
 
-Example 8
- Mathematics
- Perfect Cube: It is the only Fibonacci number (other than 1) that is a perfect cube (2³ = 8).
- Octal System: It is the base of the octal number system used in computing.
- Chess: The game of chess is played on an 8 × 8 grid.
- 🔬 Science & NatureAtomic Elements: It is the atomic number of oxygen, which is critical for supporting life on Earth.
- Octopuses & Spiders: True to the Latin prefix octo-, octopuses have 8 arms, and spiders have 8 legs.Planets: In our solar system, there are 8 recognized planets.🌏 
- Culture & Symbolism
- Prosperity: In Chinese culture, the number 8 is deeply associated with wealth and good fortune because the word for eight (bā) sounds like the word for "prosper" (fā).
- Music: A diatonic musical scale spans 8 notes, which is known as an octave
-
- I cracked the HEX_BREAKER sequence in 7 attempts! Seed: ANEAR. Can you beat my score?
+- Instruction text
+  - Use the coloured tiles to guess the hidden sequence.
+  - The feedback on the right tells you how many colours are correct.
+  - 

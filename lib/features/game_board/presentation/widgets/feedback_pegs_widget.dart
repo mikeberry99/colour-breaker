@@ -11,12 +11,15 @@ class FeedbackPegsWidget extends StatelessWidget {
   final int yellowPegs;
   final bool isEmptyRow;
 
+  final bool showHelpIndicator;
+
   const FeedbackPegsWidget({
     super.key,
     required this.protocol,
     required this.greenPegs,
     required this.yellowPegs,
     this.isEmptyRow = false,
+    this.showHelpIndicator = false,
   });
 
   @override
@@ -46,18 +49,66 @@ class FeedbackPegsWidget extends StatelessWidget {
             : FeedbackRing(pegs: pegData));
 
     final isMobile = isMobileBrowser;
+    Widget content = FeedbackInteractiveContainer(
+      onTap: () {
+        showDialog(
+          context: context,
+          barrierColor: Colors.black.withValues(alpha: 0.7),
+          builder: (context) => const FeedbackExplanationDialog(),
+        );
+      },
+      child: child,
+    );
+
+    if (showHelpIndicator) {
+      content = Stack(
+        clipBehavior: Clip.none,
+        children: [
+          content,
+          Positioned(
+            right: -2,
+            bottom: -2,
+            child: IgnorePointer(
+              child: Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E262B),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: DesignTokens.primaryNeonCyan,
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: DesignTokens.primaryNeonCyan.withValues(alpha: 0.5),
+                      blurRadius: 4,
+                      spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Text(
+                    '?',
+                    style: TextStyle(
+                      fontFamily: DesignTokens.labelFont,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      height: 1.0,
+                      color: DesignTokens.primaryNeonCyan,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Padding(
       padding: EdgeInsets.only(right: isMobile ? 4.0 : DesignTokens.gutter),
-      child: FeedbackInteractiveContainer(
-        onTap: () {
-          showDialog(
-            context: context,
-            barrierColor: Colors.black.withValues(alpha: 0.7),
-            builder: (context) => const FeedbackExplanationDialog(),
-          );
-        },
-        child: child,
-      ),
+      child: content,
     );
   }
 }

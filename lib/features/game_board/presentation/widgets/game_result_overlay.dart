@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/ui/hexagon_clipper.dart';
+import '../../../../core/ui/horizontal_hexagon_button.dart';
 import '../../../../core/utils/platform_utils.dart';
 import '../../domain/entities/game_state.dart';
 
@@ -314,35 +315,38 @@ class _ShareButtonState extends State<_ShareButton> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: HorizontalHexagonButton(
         onTap: _handleShare,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: _isHovered ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.1) : Colors.transparent,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.share,
-                size: 20,
-                color: _isHovered ? DesignTokens.primaryNeonCyan : DesignTokens.primaryNeonCyan.withValues(alpha: 0.8),
+        fillColor: _isHovered
+            ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.15)
+            : DesignTokens.primaryNeonCyan.withValues(alpha: 0.05),
+        borderColor: _isHovered
+            ? DesignTokens.primaryNeonCyan
+            : DesignTokens.primaryNeonCyan.withValues(alpha: 0.4),
+        glowColor: _isHovered ? DesignTokens.primaryNeonCyan.withValues(alpha: 0.3) : null,
+        glowBlurRadius: 12,
+        borderWidth: 1.5,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.share,
+              size: 16,
+              color: DesignTokens.primaryNeonCyan,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'SHARE',
+              style: TextStyle(
+                fontFamily: DesignTokens.labelFont,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: DesignTokens.primaryNeonCyan,
+                letterSpacing: 1.0,
               ),
-              const SizedBox(width: 8),
-              Text(
-                'SHARE',
-                style: TextStyle(
-                  fontFamily: DesignTokens.labelFont,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: _isHovered ? DesignTokens.primaryNeonCyan : DesignTokens.primaryNeonCyan.withValues(alpha: 0.8),
-                  letterSpacing: 1.0,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -367,45 +371,41 @@ class _NewGameButtonState extends State<_NewGameButton> {
 
   @override
   Widget build(BuildContext context) {
+    final fillColor = _isHovered
+        ? widget.color.withValues(alpha: 0.22)
+        : widget.color.withValues(alpha: 0.12);
+
+    final borderColor = _isHovered
+        ? widget.color
+        : widget.color.withValues(alpha: 0.7);
+
+    final glowColor = widget.color.withValues(alpha: _isHovered ? 0.4 : 0.2);
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
+      child: HorizontalHexagonButton(
         onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: isMobileBrowser ? 12 : 20),
-          decoration: BoxDecoration(
-            color: _isHovered
-                ? widget.color.withValues(alpha: 0.2)
-                : widget.color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: widget.color.withValues(alpha: 0.6),
-              width: 2,
-            ),
-            boxShadow: _isHovered
-                ? [
-                    BoxShadow(
-                      color: widget.color.withValues(alpha: 0.3),
-                      blurRadius: 20,
-                      spreadRadius: 0,
-                    )
-                  ]
-                : null,
-          ),
-          child: Text(
-            'PLAY AGAIN?',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: DesignTokens.labelFont,
-              fontSize: isMobileBrowser ? 14 : 16,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.5,
-              color: widget.color,
-            ),
+        fillColor: fillColor,
+        borderColor: borderColor,
+        glowColor: glowColor,
+        glowBlurRadius: _isHovered ? 24 : 16,
+        borderWidth: 2,
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          vertical: isMobileBrowser ? 14 : 18,
+          horizontal: 24,
+        ),
+        child: Text(
+          'PLAY AGAIN?',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: DesignTokens.labelFont,
+            fontSize: isMobileBrowser ? 14 : 16,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2.0,
+            color: widget.color,
           ),
         ),
       ),
