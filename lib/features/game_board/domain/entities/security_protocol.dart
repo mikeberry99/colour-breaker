@@ -22,13 +22,13 @@ extension SecurityProtocolExtension on SecurityProtocol {
   String get description {
     switch (this) {
       case SecurityProtocol.novice:
-        return '4-slot sequences with unlimited attempts. Perfect for learning the basic protocols.';
+        return '4-tile sequences with unlimited attempts. Perfect for learning the basic protocols.';
       case SecurityProtocol.breacher:
-        return 'Classic 4-slot sequence, colors can repeat and attempts are limited.';
+        return 'Classic 4-tile sequence, colors can repeat and attempts are limited.';
       case SecurityProtocol.expert:
-        return 'Upgraded 5-slot sequences. Each color only appears once. Only for those with high-level clearance.';
+        return 'Upgraded 5-tile sequences. Each color only appears once. Only for those with high-level clearance.';
       case SecurityProtocol.ghost:
-        return "The ultimate test of logic. 5-slot sequence, colors can repeat, 15-attempt limit.";
+        return "The ultimate test of logic. 5-tile sequence, colors can repeat, 15-attempt limit.";
     }
   }
 

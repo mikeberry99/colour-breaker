@@ -89,6 +89,7 @@ class _SeedEntryDialogState extends ConsumerState<SeedEntryDialog> {
           ),
           const SizedBox(height: 16),
           TextField(
+            autofocus: true,
             controller: _controller,
             textCapitalization: TextCapitalization.characters,
             inputFormatters: [

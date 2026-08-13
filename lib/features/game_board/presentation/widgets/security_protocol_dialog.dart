@@ -27,25 +27,25 @@ class SecurityProtocolDialog extends StatelessWidget {
     switch (protocol) {
       case SecurityProtocol.novice:
         return [
-          'Four slot sequence to guess from 6 potential colours',
+          'Four tile sequence to guess from 6 potential colours',
           'Each colour appears once in each sequence',
           'Unlimited attempts',
         ];
       case SecurityProtocol.breacher:
         return [
-          'Four slot sequence to guess from 6 potential colours',
+          'Four tile sequence to guess from 6 potential colours',
           'Each colour appears one or more times',
           '10 attempts to solve sequence',
         ];
       case SecurityProtocol.expert:
         return [
-          'Five slot sequence to guess from 6 potential colours',
+          'Five tile sequence to guess from 6 potential colours',
           'Each colour appears once in each sequence',
           '25 attempts to solve sequence',
         ];
       case SecurityProtocol.ghost:
         return [
-          'Five slot sequence to guess from 6 potential colours',
+          'Five tile sequence to guess from 6 potential colours',
           'Each colour appears one or more times',
           '15 attempts to solve sequence',
         ];
